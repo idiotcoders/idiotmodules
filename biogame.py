@@ -12,6 +12,7 @@ __version__ = (3, 1, 0)
 
 # developer of Num: @trololo_1
 # meta developer: @zeticsce
+# modify by: @idiotcoders
 from .. import loader, utils  # noqa
 import asyncio
 import contextlib
