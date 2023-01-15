@@ -82,7 +82,13 @@ class BioMod(loader.Module):
         "guidedov":    
             "<b>💘 Юзабельность доверки:</b>\n"
             "\n<b>{0}</b>  <code>бей</code> | <code>кус</code>[ьайни] | <code>зарази</code>[тьть] " # 🔽
-            "| <code>еб</code>[ниажшь] | <code>уеб</code>[жиаошть] [1-10] (@id|@user|link)"
+            "| <code>еб</code>[ниажшь] | <code>уеб</code>[жиаошть] [1-10] (@id|@user|link)/"
+            "\n<b>{0}</b>  <code>бей</code> | <code>кус</code>[ьайни] | <code>зарази</code>[тьть] " # 🔽
+            "| <code>еб</code>[ниажшь] | <code>уеб</code>[жиаошть] [1-10] =/"
+            "\n<b>{0}</b>  <code>бей</code> | <code>кус</code>[ьайни] | <code>зарази</code>[тьть] " # 🔽
+            "| <code>еб</code>[ниажшь] | <code>уеб</code>[жиаошть] [1-10] +/"
+            "\n<b>{0}</b>  <code>бей</code> | <code>кус</code>[ьайни] | <code>зарази</code>[тьть] " # 🔽
+            "| <code>еб</code>[ниажшь] | <code>уеб</code>[жиаошть] [1-10] -/"
             "\n<b>{0}</b>  <code>цен</code>[ау] | <code>вч</code>[ек]  <i>(цена вакцины)</i>"
             "\n<b>{0}</b>  <code>вак</code>[цинау] | <code>леч</code>[ись] | <code>хи</code>[лльсяйинг] | <code>лек</code>[арство]"
             "\n<b>{0}</b>  <code>жертв</code>[ыау] | <code>еж</code>[ау]"
@@ -1186,6 +1192,44 @@ class BioMod(loader.Module):
                 mes = ''.join(send_mesа.values())
                 await message.reply(mes)
 
+        if self.config["Доступ к заражениям"] == True:  
+            if send_mesа := re.search(
+                r"(?P<z>бей\s|кус[ьайни]{,3}\s|зарази[тьть]{,3}\s|еб[ниажшь]{,3}\s|уеб[иаошть]{,3}\s|опуст[и]{,2}\s|организуй горячку\s)(?P<lvl>[1-9]?[0]?\s)?([\-])",
+                text, flags=re.ASCII
+            ):
+                
+                send_mesа = send_mesа.groupdict()
+                send_mesа['minus'] = '-'
+                send_mesа['z'] = '/заразить '
+                send_mesа['lvl'] = send_mesа['lvl'] or ''
+                mes = ''.join(send_mesа.values())
+                await message.reply(mes)
+
+        if self.config["Доступ к заражениям"] == True:  
+            if send_mesа := re.search(
+                r"(?P<z>бей\s|кус[ьайни]{,3}\s|зарази[тьть]{,3}\s|еб[ниажшь]{,3}\s|уеб[иаошть]{,3}\s|опуст[и]{,2}\s|организуй горячку\s)(?P<lvl>[1-9]?[0]?\s)?([\+])",
+                text, flags=re.ASCII
+            ):
+                
+                send_mesа = send_mesа.groupdict()
+                send_mesа['plus'] = '+'
+                send_mesа['z'] = '/заразить '
+                send_mesа['lvl'] = send_mesа['lvl'] or ''
+                mes = ''.join(send_mesа.values())
+                await message.reply(mes)
+
+        if self.config["Доступ к заражениям"] == True:  
+            if send_mesа := re.search(
+                r"(?P<z>бей\s|кус[ьайни]{,3}\s|зарази[тьть]{,3}\s|еб[ниажшь]{,3}\s|уеб[иаошть]{,3}\s|опуст[и]{,2}\s|организуй горячку\s)(?P<lvl>[1-9]?[0]?\s)?([/^равного])",
+                text, flags=re.ASCII
+            ):
+                
+                send_mesа = send_mesа.groupdict()
+                send_mesа['ravno1'] = '='
+                send_mesа['z'] = '/заразить '
+                send_mesа['lvl'] = send_mesа['lvl'] or ''
+                mes = ''.join(send_mesа.values())
+                await message.reply(mes)
 
             #if send_mesа := re.search(
             #    r"(?P<eb>бей\s|еб\s)(?P<lvl>[1-9]?[0]?\s)", text):
