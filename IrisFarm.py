@@ -16,7 +16,7 @@ class IrisFarmMod(loader.Module):
             await asyncio.sleep(14700)
 
     async def unfarmcmd(self, message):
-        """какая-то хуйня от Захара"""
+        """Выключает автоферму."""
         self.set("farm", False)
         await utils.answer(
             message,
