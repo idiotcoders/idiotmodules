@@ -535,10 +535,10 @@ class BioMod(loader.Module):
 
         try:
             if norm_args[0] in args_restore:
-                hueta_govnokod_hikari_gay = 0
+                backupargs1 = 0
                 try:
                     if norm_args[1] in args_restore_y:
-                        hueta_govnokod_hikari_gay = 1
+                        backupargs1 = 1
                 except:
                     pass
                 reply_document = ""
@@ -560,9 +560,9 @@ class BioMod(loader.Module):
                         data = pickle.load(f)
                     zar = data['zar']
                     result_zar = dict(infList, **zar)
-                    if hueta_govnokod_hikari_gay:
+                    if backupargs1:
                         infList.clear()
-                    a = "с заменой " if hueta_govnokod_hikari_gay else ""
+                    a = "с заменой " if backupargs1 else ""
                     self.db.set("NumMod", "infList", result_zar)
                     
                     return await utils.answer(message, f"<emoji document_id=5212932275376759608>✅</emoji> <b>Бекап зарлиста {a}загружен!</b>")
