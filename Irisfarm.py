@@ -1,4 +1,4 @@
-#meta developer: @dend1yz
+#meta developer: @idiotcoders
 from .. import loader, utils
 import asyncio
 
