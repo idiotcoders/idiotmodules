@@ -3,7 +3,7 @@ from .. import loader, utils
 import asyncio
 
 
-class IrisFarmMod(loader.Module):
+class IrisfarmMod(loader.Module):
     """Автоматизирует работу с Iris Chat Manager (автоматическая ферма)"""
 
     strings = {"name": "Irisfarm"}
