@@ -12,7 +12,7 @@ from .. import loader, utils
 
 
 async def photo():
-        link = "https://api.lolicon.app/setu/v2"
+        link = "https://api.lolicon.app/setu/v2?tag=loli"
         img = (
             await utils.run_sync(
                 requests.get,
