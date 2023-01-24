@@ -11,11 +11,8 @@ from telethon.tl.types import Message
 from .. import loader, utils
 
 
-async def photo(nsfw: bool):
-    try:
+async def photo():
         link = "https://api.lolicon.app/setu/v2"
-        if nsfw:
-            link += "?r18=1"
         img = (
             await utils.run_sync(
                 requests.get,
@@ -24,9 +21,6 @@ async def photo(nsfw: bool):
         ).json()
         if img["error"] == "":
             return img["data"][0]["urls"]["original"]
-
-    except:
-        return (await photo(nsfw))
                         
 @loader.tds
 class loliMod(loader.Module):
@@ -36,16 +30,15 @@ class loliMod(loader.Module):
     strings_ru = {"_cls_doc": "Отправляет милые фотографии лолей"}
 
     @loader.command(
-        ru_doc="[nsfw] - Показать лолю",
+        ru_doc="Показать лолю",
     )
     async def lolicmd(self, message: Message):
-        """[nsfw] - Send loli picture"""
+        """Send loli picture"""
         await self.inline.gallery(
             caption=lambda: f"<i>{utils.ascii_face()}</i>",
             message=message,
             next_handler=functools.partial(
                 photo,
-                nsfw="nsfw" in utils.get_args_raw(message).lower(),
             ),
             preload=5,
         )
