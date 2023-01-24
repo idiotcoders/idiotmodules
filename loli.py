@@ -39,7 +39,7 @@ class loliMod(loader.Module):
         ru_doc="[nsfw] - Показать лолю",
     )
     async def lolicmd(self, message: Message):
-        """[nsfw] - Send catgirl picture"""
+        """[nsfw] - Send loli picture"""
         await self.inline.gallery(
             caption=lambda: f"<i>{utils.ascii_face()}</i>",
             message=message,
