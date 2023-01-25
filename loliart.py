@@ -23,7 +23,7 @@ async def photo():
             return img["data"][0]["urls"]["original"]
                         
 @loader.tds
-class loliartsMod(loader.Module):
+class loliartMod(loader.Module):
     """Sends cute anime loli-art ☺"""
 
     strings = {
