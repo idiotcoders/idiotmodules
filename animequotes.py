@@ -14,8 +14,8 @@ from .. import loader, utils
 async def quotes() -> dict:
     link = "https://animechan.vercel.app/api/random"
     quote_data = (await utils.run_sync(requests.get, link)).json()
-    return {"quote": quote_data["quote"], "character": quote_data["character"], "anime": quote_data["anime"]}
-                        
+    return quote_data
+
 @loader.tds
 class animequotesMod(loader.Module):
     """Sends anime quotes ☺"""
@@ -29,7 +29,8 @@ class animequotesMod(loader.Module):
 
     @loader.command()
     async def animequotecmd(self, message: Message):
-        """— Send anime quotes"""
-        data = await quotes()
-        quote, character, anime = data["quote"], data["character"], data["anime"]
-        await utils.answer(message, self.strings("quote") + "<i>" + quote + "</i>" + self.strings("character") + "<i>" + character + "</i>" + self.strings("anime") + "<i>" + anime + "</i>")
+        """Sends anime quotes"""
+        quote_data = await quotes()
+        quote, character, anime = quote_data["quote"], quote_data["character"], quote_data["anime"]
+        quote_message = f"{self.strings['quote']}<i>{quote}</i>{self.strings['character']}<i>{character}</i>{self.strings['anime']}<i>{anime}</i>"
+        await utils.answer(message, quote_message)
