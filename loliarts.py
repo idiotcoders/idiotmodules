@@ -23,17 +23,19 @@ async def photo():
             return img["data"][0]["urls"]["original"]
                         
 @loader.tds
-class loliMod(loader.Module):
-    """Sends cute anime girl pictures"""
+class loliartsMod(loader.Module):
+    """Sends cute anime loli-art ☺"""
 
-    strings = {"name": "loli"}
-    strings_ru = {"_cls_doc": "Отправляет милые фотографии лолей"}
+    strings = {
+        "name": "LoliArt"
+    }
+    strings_ru = {"_cls_doc": "Отправляет милые лоли-арты ☺"}
 
     @loader.command(
-        ru_doc="Показать лолю",
+        ru_doc="— Отправит милый лоли-арт"
     )
     async def lolicmd(self, message: Message):
-        """Send loli picture"""
+        """— Send cute loli-art"""
         await self.inline.gallery(
             caption=lambda: f"<i>{utils.ascii_face()}</i>",
             message=message,
