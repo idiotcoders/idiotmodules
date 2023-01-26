@@ -40,7 +40,7 @@ def validate_text(text: str):
 @loader.tds
 class BioMod(loader.Module):
     """
-<emoji document_id=5454344269596729020>💘</emoji>
+💘
     """
     strings = {
         
