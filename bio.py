@@ -932,13 +932,13 @@ class BioMod(loader.Module):
                 if podverg.startswith('🦠 <a href="https://t.me/'):
                     y = podverg.index('https://t.me/') + 13
                     user3 = podverg[y:].split('"', maxsplit=1)[0]
-                    if user3 != get_me.username:
+                    if user3.lower() != get_me.username.lower():
                         return
                     retur = 1
                 if podverg.startswith('🦠 <a href="tg:'):
                     y = podverg.index('user?id=') + 8  
-                    user3 = podverg[y:].split('"', maxsplit=1)[0]
-                    if get_me.id != int(user3):
+                    user3 = podverg[y:].split('"', maxsplit=1)[0]    
+                    if get_me.id != user3:
                         return 
                     retur = 1
             except ValueError:
@@ -1965,7 +1965,7 @@ class BioMod(loader.Module):
             loader.ConfigValue(
                 "Автосохранение жертв",
                 True,
-                "Вкл/выкл автосохранение жертв в зарлист.",
+                "Вкл/выкл автосохранение жертв в зарлист. \n\nОБЯЗАТЕЛЬНО НУЖЕН ЮЗЕРНЕЙМ ПО ТИПУ @idiotcoders",
                 validator=loader.validators.Boolean(),
             ),
             loader.ConfigValue(
