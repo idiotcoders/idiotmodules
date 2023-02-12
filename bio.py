@@ -53,21 +53,21 @@ class BioMod(loader.Module):
         "nolink": "<emoji document_id=5197248832928227386>💔</emoji> Нет ссылки.",
 
         "hueta": "Ничего не могу понять..💔",
-        
+
         "r.save":   
             "<emoji document_id=5212932275376759608>💖</emoji> Жертва <b><code>{}</code></b> в зарлисте.\n"
-            "<b><emoji document_id=5278372097905664675>☣️</emoji> +{}{}</b> био-ресурсов",
+            "<b><emoji document_id=5433635625217563352>💊</emoji> +{}{}</b> био-ресурсов",
         "auto.save":   
             "<emoji document_id=5212932275376759608>💘</emoji> Жертва <b><code>{}</code></b> в зарлисте.\n"
-            "<b><emoji document_id=5278372097905664675>☣️</emoji> {}+{}</b> био-ресурсов.",        
+            "<b><emoji document_id=5433635625217563352>💊</emoji> {}+{}</b> био-ресурсов.",        
         "search":
             "<emoji document_id=5212932275376759608>💓</emoji> Жертва <code>{}</code> приносит:\n"
-            "<b><emoji document_id=5278372097905664675>☣️</emoji> +{} био-ресурсов.</b>\n"
+            "<b><emoji document_id=5433635625217563352>💊</emoji> +{} био-ресурсов.</b>\n"
             "<emoji document_id=5766931615737449648>📆</emoji> Дата: <i>{}</i>",
         
         "nf": "<emoji document_id=5215273032553078755>💔</emoji> Не найдено! Скорее всего не бил, давай бей!",
         
-        "no_user": "<emoji document_id=5215273032553078755>💔</emoji> user {} don't exist.",
+        "no_user": "<emoji document_id=5215273032553078755>💔</emoji> Пользователь {} не существует.",
 
         "nous": "<emoji document_id=5215273032553078755>💔</emoji> Жертва или пользователь не существует.",
 
@@ -174,15 +174,15 @@ class BioMod(loader.Module):
         
         "tzar": "<emoji document_id=5212932275376759608>💓</emoji> Заражения завершены.",
         
-        "clrex": "💔 Список исключений очищен.",
+        "clrex": "<emoji document_id=5404879225737978176>💔</emoji> Список исключений очищен.",
         
-        "zar_rm": "💔 Жертва <b><code>{0}</code></b> {1}удалена.",
+        "zar_rm": "<emoji document_id=5404879225737978176>💔</emoji> Жертва <b><code>{0}</code></b> {1}удалена.",
         
-        "exadd": "💓 Пользователь <code>{}</code> в исключениях.",
+        "exadd": "<emoji document_id=5404879225737978176>💔</emoji> Пользователь <code>{}</code> в исключениях.",
         
-        "exrm": "💔 Пользователь <code>{}</code> удален.",
+        "exrm": "<emoji document_id=5404879225737978176>💔</emoji> Пользователь <code>{}</code> удален.",
         
-        "clrzar": "💔 Зарлист <b>очищен</b>.",
+        "clrzar": "<emoji document_id=5404879225737978176>💔</emoji> Зарлист <b>очищен</b>.",
         
         "guide":
             "<b>Помощь по модулю BioHelper:</b>\n\n"
@@ -932,13 +932,13 @@ class BioMod(loader.Module):
                 if podverg.startswith('🦠 <a href="https://t.me/'):
                     y = podverg.index('https://t.me/') + 13
                     user3 = podverg[y:].split('"', maxsplit=1)[0]
-                    if user3.lower() != get_me.username.lower():
+                    if user3 != get_me.username:
                         return
                     retur = 1
                 if podverg.startswith('🦠 <a href="tg:'):
                     y = podverg.index('user?id=') + 8  
-                    user3 = podverg[y:].split('"', maxsplit=1)[0]    
-                    if get_me.id != user3:
+                    user3 = podverg[y:].split('"', maxsplit=1)[0]
+                    if get_me.id != int(user3):
                         return 
                     retur = 1
             except ValueError:
