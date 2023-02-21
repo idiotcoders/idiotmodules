@@ -41,7 +41,6 @@ DEMOTE_RIGHTS = ChatAdminRights(
 
 # =====================================================
 
-
 @loader.tds
 class PromoteMod(loader.Module):
     """Promote/demote users"""
@@ -139,7 +138,7 @@ class PromoteMod(loader.Module):
                             add_admins=False,
                             anonymous=False,
                             manage_call=False,
-                            other=False
+                            other=True
                         ),
                         rank,
                     )
