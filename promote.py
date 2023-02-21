@@ -133,7 +133,7 @@ class PromoteMod(loader.Module):
                             edit_messages=False,
                             delete_messages=False,
                             ban_users=False,
-                            invite_users=True,
+                            invite_users=False,
                             pin_messages=False,
                             add_admins=False,
                             anonymous=False,
