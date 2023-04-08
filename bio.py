@@ -9,6 +9,21 @@ __version__ = (3, 2, 0)
 #                              НЕ © Copyright 2022
 #                             https://t.me/zeticsce              
 
+# _           _            _ _
+# | |         | |          (_) |
+# | |     ___ | |_ ___  ___ _| | __
+# | |    / _ \| __/ _ \/ __| | |/ /
+# | |___| (_) | || (_) \__ \ |   <
+# \_____/\___/ \__\___/|___/_|_|\_\
+#
+#              © Copyright 2022
+#
+#         developed by @lotosiiik, @byateblan
+
+# 🔒 Licensed under the GNU AGPLv3
+# 🌐 https://www.gnu.org/licenses/agpl-3.0.html
+
+
 
 # developer of Num: @trololo_1
 # meta developer: @zeticsce
@@ -750,6 +765,38 @@ class BioMod(loader.Module):
                             user, count, k
                 )
             )
+
+
+    async def калкcmd(self, message: Message):
+        """
+        Команда, которая вычисляет сколько 🧬Био-ресурсов или же ic☣️ нужно\nПример: .ic <характеристика> <уровень С> <уровень До>\n
+        """
+        args = utils.get_args(message)
+        if not args or len(args) != 3 or not args[1].isdigit() or not args[2].isdigit() or args[2] == args[1] or int(args[2]) <= int(args[1]):
+            await utils.answer(
+                message, "🚫| <b>Чтобы использовать калькулятор напишите .ic <навык> <уровень С> <уровень До></b>"
+            )
+            return
+
+        skill, from_lvl, to_lvl = args
+        from_lvl, to_lvl = int(from_lvl), int(to_lvl)
+        amount = (
+            await self._client.inline_query(
+                "@hikkaftgbot", f"{skill}#{from_lvl}#{to_lvl}"
+            )
+        )[0].title
+
+        if not amount.isdigit():
+            await utils.answer(message, amount)
+            return
+
+        amount = f"{int(amount):,}".replace(",", " ")
+
+        await utils.answer(
+            message,
+            f"🍀| Чтобы увеличить навык «{skill}» с {from_lvl} до {to_lvl} уровня"
+            f" потребуется: {amount} био-ресурсов🧬 или же ic☣️",
+        )
 
     async def довcmd(self, message):
         """
