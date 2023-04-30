@@ -4,6 +4,7 @@
 
 import asyncio
 import functools
+from deep_translator import GoogleTranslator
 
 import requests
 from telethon.tl.types import Message
@@ -11,10 +12,14 @@ from telethon.tl.types import Message
 from .. import loader, utils
 
 
+
 async def quotes() -> dict:
     link = "https://animechan.vercel.app/api/random"
     quote_data = (await utils.run_sync(requests.get, link)).json()
+    quote_data["quote"] = GoogleTranslator(source="auto", target="ru").translate(quote_data["quote"])
+    quote_data["character"] = GoogleTranslator(source="auto", target="ru").translate(quote_data["character"])
     return quote_data
+
 
 @loader.tds
 class animequotesMod(loader.Module):
