@@ -49,9 +49,21 @@ class animequotesMod(loader.Module):
         "anime": "\n<b>🔆Anime:</b> "
     }
 
+    strings_ru = {
+        "name": "AnimeQuotes",
+        "no_results": "<b>❌ | Ничего не найдено.</b>",
+        "character": "\n<b>👤Персонаж:</b> ",
+        "quote": "\n<b>💭Цитата:</b> ",
+        "anime": "\n<b>🔆Аниме:</b> ",
+        "_cmd_doc_animequote": "Отправляет аниме цитатки",
+        "_cmd_doc_animechar": "Отправляет аниме цитатки определенного персонажа",
+        "_cmd_doc_animeavailable": "Отправляет список всех доступных аниме на данный момент"
+    }
+
+
     @loader.command(alias="aq")
     async def animequotecmd(self, message: Message):
-        """Sends random anime quotes or for specific anime"""
+        """Sends anime quotes"""
         args = utils.get_args_raw(message)
         quote_data = await quotes(title=args)
         quote, character, anime = quote_data["quote"], quote_data["character"], quote_data["anime"]
@@ -67,7 +79,7 @@ class animequotesMod(loader.Module):
     
     @loader.command(alias="ac")
     async def animechar(self, message: Message):
-        """Sends random anime quotes for specific character"""
+        """Sends anime quotes for specific character"""
         character_name = utils.get_args_raw(message)
         if not character_name:
             await message.edit("<b>You must specify a character name!</b>")
@@ -79,4 +91,21 @@ class animequotesMod(loader.Module):
         quote, character, anime = quote_data["quote"], quote_data["character"], quote_data["anime"]
         quote_message = f"{self.strings['quote']}<i>{quote}</i>{self.strings['character']}<i>{character}</i>{self.strings['anime']}<i>{anime}</i>"
         await utils.answer(message, quote_message)
-
+    
+    @loader.command(alias="aa")
+    async def animeavailable(self, message: Message):
+        """Sends a list of available anime"""
+        args = utils.get_args_raw(message)
+        link = "https://animechan.vercel.app/api/available/anime"
+        response = await utils.run_sync(requests.get, link)
+        available_anime = response.json()
+        if args:
+            matching_anime = [anime for anime in available_anime if args.lower() in anime.lower()]
+            if matching_anime:
+                anime_message = "\n".join(matching_anime)
+            else:
+                await utils.answer(message, self.strings["no_results"])
+                return
+        else:
+            anime_message = "\n".join(available_anime)
+        await utils.answer(message, anime_message)
