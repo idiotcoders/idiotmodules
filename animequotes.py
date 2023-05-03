@@ -9,10 +9,10 @@ from typing import Optional
 
 import requests
 from telethon.tl.types import Message
+from io import BytesIO
+
 
 from .. import loader, utils
-
-
 
 async def quotes(title: str = None) -> dict:
     link = "https://animechan.vercel.app/api/random"
@@ -108,4 +108,23 @@ class animequotesMod(loader.Module):
                 return
         else:
             anime_message = "\n".join(available_anime)
-        await utils.answer(message, anime_message)
+        await utils.answer(message, anime_message)    
+    
+    @loader.command(alias="ca")
+    async def characteravailable(self, message: Message):
+        """Sends a list of available characters"""
+        args = utils.get_args_raw(message)
+        link = "https://animechan.vercel.app/api/available/character"
+        response = await utils.run_sync(requests.get, link)
+        available_anime = response.json()
+        if args:
+            matching_anime = [anime for anime in available_anime if args.lower() in anime.lower()]
+            if matching_anime:
+                anime_message = "\n".join(matching_anime)
+            else:
+                await utils.answer(message, self.strings["no_results"])
+                return
+        else:
+            anime_message = "\n".join(available_anime)
+        await utils.answer(message, anime_message)    
+    
