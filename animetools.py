@@ -26,7 +26,8 @@ class animetoolsMod(loader.Module):
         "enter_name": "<emoji document_id=5467928559664242360>❗</emoji> <b>You must specify a character name!</b>",
         "description": "\n<emoji document_id=5818865088970362886>ℹ️</emoji> <b>Description:</b> <i>{}</i>",
         "genres": "\n<emoji document_id=5359441070201513074>🎭 </emoji> <b>Genres:</b>  <i>{}</i>",
-        "loading": "<emoji document_id=5213452215527677338>⏳</emoji> Loading..."
+        "loading": "<emoji document_id=5213452215527677338>⏳</emoji> Loading...",
+        "error": "<emoji document_id=5215273032553078755>❎</emoji> An error has occurred, please try again"
     }
 
     strings_ru = {
@@ -39,6 +40,7 @@ class animetoolsMod(loader.Module):
         "genres": "\n<emoji document_id=5359441070201513074>🎭 </emoji> <b>Жанры:</b>  <i>{}</i>",
         "enter_name": "<emoji document_id=5467928559664242360>❗</emoji> <b>Вы должны указать имя персонажа!</b>",
         "loading": "<emoji document_id=5213452215527677338>⏳</emoji> Загрузка ...",
+        "error": "<emoji document_id=5215273032553078755>❎</emoji> Произошла ошибка, попробуйте снова",
         "_cmd_doc_animequote": "Отправляет аниме цитатки",
         "_cmd_doc_animechar": "Отправляет аниме цитатки определенного персонажа",
         "_cmd_doc_animeavailable": "Отправляет список всех доступных аниме на данный момент",
@@ -145,15 +147,18 @@ class animetoolsMod(loader.Module):
     async def randomanime(self, message: Message):
         """Sends a random anime"""
         await utils.answer(message, self.strings["loading"])
-        link = "https://anime777.ru/api/rand"
-        adata = (await utils.run_sync(requests.get, link)).json()
-        title = adata["title"]
-        genres = ", ".join(adata["material_data"]["anime_genres"])
-        description = adata["material_data"]["anime_description"]
-        screenshots = adata["material_data"]["screenshots"]
-        anime_message = (
-            self.strings['anime'].format(title) +
-            self.strings['genres'].format(genres) +
-            self.strings['description'].format(description)
-        )
-        await utils.answer_file(message, screenshots[0], anime_message)
+        try:
+            link = "https://anime777.ru/api/rand"
+            adata = (await utils.run_sync(requests.get, link)).json()
+            title = adata["title"]
+            genres = ", ".join(adata["material_data"]["anime_genres"])
+            description = adata["material_data"]["description"]
+            screenshots = adata["material_data"]["screenshots"]
+            anime_message = (
+                self.strings['anime'].format(title) +
+                self.strings['genres'].format(genres) +
+                self.strings['description'].format(description)
+            )
+            await utils.answer_file(message, screenshots[0], anime_message)
+        except:
+            await utils.answer(message, "error")
