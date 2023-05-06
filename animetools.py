@@ -25,7 +25,8 @@ class animetoolsMod(loader.Module):
         "anime": "\n<emoji document_id=6334664298710697689>🍿</emoji> <b>Anime:</b> <i>{}</i>",
         "enter_name": "<emoji document_id=5467928559664242360>❗</emoji> <b>You must specify a character name!</b>",
         "description": "\n<emoji document_id=5818865088970362886>ℹ️</emoji> <b>Description:</b> <i>{}</i>",
-        "genres": "\n<emoji document_id=5359441070201513074>🎭 </emoji> <b>Genres:</b>  <i>{}</i>"
+        "genres": "\n<emoji document_id=5359441070201513074>🎭 </emoji> <b>Genres:</b>  <i>{}</i>",
+        "loading": "<emoji document_id=5213452215527677338>⏳</emoji> Loading..."
     }
 
     strings_ru = {
@@ -37,6 +38,7 @@ class animetoolsMod(loader.Module):
         "description": "\n<emoji document_id=5818865088970362886>ℹ️</emoji> <b>Описание:</b>  <i>{}</i>",
         "genres": "\n<emoji document_id=5359441070201513074>🎭 </emoji> <b>Жанры:</b>  <i>{}</i>",
         "enter_name": "<emoji document_id=5467928559664242360>❗</emoji> <b>Вы должны указать имя персонажа!</b>",
+        "loading": "<emoji document_id=5213452215527677338>⏳</emoji> Загрузка ...",
         "_cmd_doc_animequote": "Отправляет аниме цитатки",
         "_cmd_doc_animechar": "Отправляет аниме цитатки определенного персонажа",
         "_cmd_doc_animeavailable": "Отправляет список всех доступных аниме на данный момент",
@@ -142,10 +144,16 @@ class animetoolsMod(loader.Module):
     @loader.command(alias="ra")
     async def randomanime(self, message: Message):
         """Sends a random anime"""
+        await utils.answer(message, self.strings["loading"])
         link = "https://anime777.ru/api/rand"
         adata = (await utils.run_sync(requests.get, link)).json()
         title = adata["title"]
         genres = ", ".join(adata["material_data"]["anime_genres"])
         description = adata["material_data"]["anime_description"]
-        anime_message = f"{self.strings['anime']}<i>{title}\n</i>{self.strings['genres']}<i>{genres}\n</i>{self.strings['description']}<i>{description}</i>"
-        await utils.answer(message, anime_message)
+        screenshots = adata["material_data"]["screenshots"]
+        anime_message = (
+            self.strings['anime'].format(title) +
+            self.strings['genres'].format(genres) +
+            self.strings['description'].format(description)
+        )
+        await utils.answer_file(message, screenshots[0], anime_message)
