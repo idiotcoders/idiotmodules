@@ -2,8 +2,6 @@
 # scope: hikka_only
 # scope: hikka_min 1.2.10
 
-import asyncio
-import functools
 from deep_translator import GoogleTranslator
 from typing import Optional
 
@@ -14,60 +12,35 @@ from io import BytesIO
 
 from .. import loader, utils
 
-async def quotes(title: str = None) -> dict:
-    link = "https://animechan.vercel.app/api/random"
-    if title:
-        link += f"/anime?title={title}"
-    quote_data = (await utils.run_sync(requests.get, link)).json()
-    try:
-        quote_data["quote"] = GoogleTranslator(source="auto", target="ru").translate(quote_data["quote"])
-    except KeyError:
-        return {"quote": "no_results", "character": "no_results", "anime": "no_results"}
-    return quote_data
-
-async def get_character_quote(character_name: str) -> dict:
-        """Returns random quote data for given character"""
-        link = f"https://animechan.vercel.app/api/random/character?name={character_name}"
-        response = await utils.run_sync(requests.get, link)
-        quote_data = response.json()
-        try:
-            quote_data["quote"] = GoogleTranslator(source="auto", target="ru").translate(quote_data["quote"])
-        except KeyError:
-            return {"quote": "no_results", "character": "no_results", "anime": "no_results"}
-        return quote_data
-
-async def random_anime777():
-    url = "https://anime777.ru/api/rand"
-    response = await utils.run_sync(requests.get, url)
-    data = response.json()
-    title = data["title"]
-    genres = data["material_data"]["anime_genres"]
-    description = data["material_data"]["anime_description"]
-    return {"title": title, "genres": genres, "description": description}
 
 @loader.tds
-class animequotesMod(loader.Module):
-    """Sends anime quotes ☺"""
+class animetoolsMod(loader.Module):
+    """AnimeTools"""
 
     strings = {
-        "name": "AnimeQuotes",
-        "no_results": "<b>❌ | No results found.</b>",
-        "character": "\n<b>👤Character:</b> ",
-        "quote": "\n<b>💭Quote:</b> ",
-        "anime": "\n<b>🔆Anime:</b> ",
-        "description": "\n<b>Description:</b> ",
-        "genres": "\n<b>ℹ️Genres:</b> "
+        "name": "AnimeTools",
+        "no_results": "<emoji document_id=5210952531676504517>❌</emoji> No results found!",
+        "character": "\n<emoji document_id=5370765563226236970>👤</emoji> <b>Character:</b> <i>{}</i>",
+        "quote": "\n<emoji document_id=5465300082628763143>💬</emoji> <b>Quote:</b> <i>{}</i>",
+        "anime": "\n<emoji document_id=6334664298710697689>🍿</emoji> <b>Anime:</b> <i>{}</i>",
+        "enter_name": "<emoji document_id=5467928559664242360>❗</emoji> <b>You must specify a character name!</b>",
+        "description": "\n<emoji document_id=5818865088970362886>ℹ️</emoji> <b>Description:</b> <i>{}</i>",
+        "genres": "\n<emoji document_id=5359441070201513074>🎭 </emoji> <b>Genres:</b>  <i>{}</i>"
     }
 
     strings_ru = {
-        "name": "AnimeQuotes",
-        "no_results": "<b>❌ | Ничего не найдено.</b>",
-        "character": "\n<b>👤Персонаж:</b> ",
-        "quote": "\n<b>💭Цитата:</b> ",
-        "anime": "\n<b>🔆Аниме:</b> ",
+        "name": "AnimeTools",
+        "no_results": "<emoji document_id=5210952531676504517>❌</emoji> Результатов не найдено!",
+        "character": "\n<emoji document_id=5370765563226236970>👤</emoji> <b>Персонаж:</b> <i>{}</i>",
+        "quote": "\n<emoji document_id=5465300082628763143>💬</emoji> <b>Цитата:</b> <i>{}</i>",
+        "anime": "\n<emoji document_id=6334664298710697689>🍿</emoji> <b>Аниме:</b> <i>{}</i>",
+        "description": "\n<emoji document_id=5818865088970362886>ℹ️</emoji> <b>Описание:</b>  <i>{}</i>",
+        "genres": "\n<emoji document_id=5359441070201513074>🎭 </emoji> <b>Жанры:</b>  <i>{}</i>",
+        "enter_name": "<emoji document_id=5467928559664242360>❗</emoji> <b>Вы должны указать имя персонажа!</b>",
         "_cmd_doc_animequote": "Отправляет аниме цитатки",
         "_cmd_doc_animechar": "Отправляет аниме цитатки определенного персонажа",
         "_cmd_doc_animeavailable": "Отправляет список всех доступных аниме на данный момент",
+        "_cmd_doc_randomanime": "Отправляет случайное аниме",
         "_cmd_doc_characteravailable": "Отправляет список всех доступных персонажей на данный момент"
     }
 
@@ -76,33 +49,59 @@ class animequotesMod(loader.Module):
     async def animequotecmd(self, message: Message):
         """Sends anime quotes"""
         args = utils.get_args_raw(message)
-        quote_data = await quotes(title=args)
-        quote, character, anime = quote_data["quote"], quote_data["character"], quote_data["anime"]
-        quote_message = f"{self.strings['quote']}<i>{quote}</i>{self.strings['character']}<i>{character}</i>"
-        if anime:
-            quote_message += f"{self.strings['anime']}<i>{anime}</i>"
+        link = "https://animechan.vercel.app/api/random"
+        if args:
+            link += "/anime?title={args}"
+        qdata = (await utils.run_sync(requests.get, link)).json()
 
-        if not quote_data.get("quote") or "no_results" in [quote_data.get("quote"), quote_data.get("character"), quote_data.get("anime")]:
+        try:
+            qdata["quote"] = GoogleTranslator(source="auto", target="ru").translate(qdata["quote"])
+        except KeyError:
+            qdata = {"quote": "no_results", "character": "no_results", "anime": "no_results"}
+
+        quote, chr, anime = qdata["quote"], qdata["character"], qdata["anime"]
+
+        if not qdata.get("quote") or "no_results" in [qdata.get("quote"), qdata.get("character"), qdata.get("anime")]:
             await utils.answer(message, self.strings["no_results"])
             return
-        
-        await utils.answer(message, quote_message)
-    
+
+        quote = (
+            self.strings['quote'].format(quote) +
+            self.strings['character'].format(chr) +
+            self.strings['anime'].format(anime)
+        )
+        await utils.answer(message, quote)
+
+
     @loader.command(alias="ac")
     async def animechar(self, message: Message):
         """Sends anime quotes for specific character"""
         character_name = utils.get_args_raw(message)
         if not character_name:
-            await message.edit("<b>You must specify a character name!</b>")
+            await utils.answer(message, self.strings['enter_name'])
             return
-        quote_data = await get_character_quote(character_name)
-        if not quote_data.get("quote") or "no_results" in [quote_data.get("quote"), quote_data.get("character"), quote_data.get("anime")]:
+        link = f"https://animechan.vercel.app/api/random/character?name={character_name}"
+        qdata = (await utils.run_sync(requests.get, link)).json()
+
+        try:
+            qdata["quote"] = GoogleTranslator(source="auto", target="ru").translate(qdata["quote"])
+        except KeyError:
+            qdata = {"quote": "no_results", "character": "no_results", "anime": "no_results"}
+
+        quote, chr, anime = qdata["quote"], qdata["character"], qdata["anime"]
+
+        if not qdata.get("quote") or "no_results" in [qdata.get("quote"), qdata.get("character"), qdata.get("anime")]:
             await utils.answer(message, self.strings["no_results"])
             return
-        quote, character, anime = quote_data["quote"], quote_data["character"], quote_data["anime"]
-        quote_message = f"{self.strings['quote']}<i>{quote}</i>{self.strings['character']}<i>{character}</i>{self.strings['anime']}<i>{anime}</i>"
-        await utils.answer(message, quote_message)
-    
+
+        quote = (
+            self.strings['quote'].format(quote) +
+            self.strings['character'].format(chr) +
+            self.strings['anime'].format(anime)
+        )
+        await utils.answer(message, quote)
+
+
     @loader.command(alias="aa")
     async def animeavailable(self, message: Message):
         """Sends a list of available anime"""
@@ -120,7 +119,8 @@ class animequotesMod(loader.Module):
         else:
             anime_message = "\n".join(available_anime)
         await utils.answer(message, anime_message)    
-    
+
+
     @loader.command(alias="ca")
     async def characteravailable(self, message: Message):
         """Sends a list of available characters"""
@@ -137,16 +137,15 @@ class animequotesMod(loader.Module):
                 return
         else:
             anime_message = "\n".join(available_anime)
-        await utils.answer(message, anime_message)    
+        await utils.answer(message, anime_message)
 
     @loader.command(alias="ra")
     async def randomanime(self, message: Message):
         """Sends a random anime"""
-        anime_data = await random_anime777()
-        title = anime_data["title"]
-        genres = ", ".join(anime_data["genres"])
-        description = anime_data["description"]
-        anime_message = f"<b>{title}</b>\n\n<i>Genres:</i> {genres}\n\n{description}"
+        link = "https://anime777.ru/api/rand"
+        adata = (await utils.run_sync(requests.get, link)).json()
+        title = adata["title"]
+        genres = ", ".join(adata["material_data"]["anime_genres"])
+        description = adata["material_data"]["anime_description"]
+        anime_message = f"{self.strings['anime']}<i>{title}\n</i>{self.strings['genres']}<i>{genres}\n</i>{self.strings['description']}<i>{description}</i>"
         await utils.answer(message, anime_message)
-
-    
