@@ -27,7 +27,8 @@ class animetoolsMod(loader.Module):
         "description": "\n<emoji document_id=5818865088970362886>ℹ️</emoji> <b>Description:</b> <i>{}</i>",
         "genres": "\n<emoji document_id=5359441070201513074>🎭 </emoji> <b>Genres:</b>  <i>{}</i>",
         "loading": "<emoji document_id=5213452215527677338>⏳</emoji> Loading...",
-        "error": "<emoji document_id=5215273032553078755>❎</emoji> An error has occurred, please try again"
+        "error": "<emoji document_id=5215273032553078755>❎</emoji> An error has occurred, please try again",
+        "no_desc": "❌ No description!"
     }
 
     strings_ru = {
@@ -45,7 +46,8 @@ class animetoolsMod(loader.Module):
         "_cmd_doc_animechar": "Отправляет аниме цитатки определенного персонажа",
         "_cmd_doc_animeavailable": "Отправляет список всех доступных аниме на данный момент",
         "_cmd_doc_randomanime": "Отправляет случайное аниме",
-        "_cmd_doc_characteravailable": "Отправляет список всех доступных персонажей на данный момент"
+        "_cmd_doc_characteravailable": "Отправляет список всех доступных персонажей на данный момент",
+        "no_desc": "❌ Без описания!"    
     }
 
 
@@ -153,6 +155,8 @@ class animetoolsMod(loader.Module):
             title = adata["title"]
             genres = ", ".join(adata["material_data"]["anime_genres"])
             description = adata["material_data"]["description"]
+            if not description:
+                description = self.strings['no_desc']
             screenshots = adata["material_data"]["screenshots"]
             anime_message = (
                 self.strings['anime'].format(title) +
@@ -161,4 +165,4 @@ class animetoolsMod(loader.Module):
             )
             await utils.answer_file(message, screenshots[0], anime_message)
         except:
-            await utils.answer(message, "error")
+            await utils.answer(message, self.strings['error'])
