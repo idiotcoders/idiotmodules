@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 
 @loader.tds
-class LastFMMod(loader.Module):
+class lastfmMod(loader.Module):
     """LastFM Now"""
 
     strings = {

@@ -5,3 +5,4 @@ loliart
 animetools
 animearts
 toadbot
+lastfm
