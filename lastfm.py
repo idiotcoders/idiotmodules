@@ -27,8 +27,8 @@ logger = logging.getLogger(__name__)
 
 
 @loader.tds
-class lastfmMod(loader.Module):
-    """LastFM Now"""
+class LastFMMod(loader.Module):
+    """LastFM Now (based on SpotifyNow)"""
 
     strings = {
         "name": "LastFM",
@@ -52,6 +52,7 @@ class lastfmMod(loader.Module):
         "_cfg_username": "Укажи логин от аккаунта Last.fm 🤫",
         "_cfg_passwd": "Укажи пароль от аккаунта Last.fm 🤫",
         "_cfg_autobio": "Укажи шаблон автобио\nАргументы: {author} — автор, {track} — название трека",
+        "_cls_doc": "LastFM Now (основан на SpotifyNow)",
         "error": "<emoji document_id=5312526098750252863>❌</emoji> <b>Произошла ошибка. Убедитесь, что Вы автворизованы и музыка играет!</b>\n\n<code>{error}</code>",
         "no_auth": "<emoji document_id=5312526098750252863>❌</emoji> <b>Вы не авторизованы!</b>",
         "nothing_playing": "<emoji document_id=5974411134936025665>❌</emoji> <b>Ничего сейчас не играет!</b>",
@@ -162,6 +163,7 @@ class lastfmMod(loader.Module):
             return
 
 
+    @error_handler
     @loader.command(
         ru_doc="👉 Получить топ самых прослушиваемых треков. Вы можете указать кол-во треков в топе (необязательно)"
     )
@@ -181,6 +183,7 @@ class lastfmMod(loader.Module):
         )
 
 
+    @error_handler
     @loader.command(
         ru_doc="👉 Включить/выключить авто-био"
     )
@@ -200,6 +203,7 @@ class lastfmMod(loader.Module):
             self.autobio.stop()
 
 
+    @error_handler
     @loader.command(
         ru_doc="👉 Покажет проигрываемый сейчас трек"
     )
