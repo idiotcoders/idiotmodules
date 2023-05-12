@@ -40,9 +40,13 @@ class LastFMMod(loader.Module):
         "error": "<emoji document_id=5312526098750252863>❌</emoji> <b>Error occurred. Make sure you are authorized and the track is playing!</b>\n\n<code>{error}</code>",
         "no_auth": "<emoji document_id=5312526098750252863>❌</emoji> <b>You are unauthorized!</b>",
         "nothing_playing": "<emoji document_id=5974411134936025665>❌</emoji> <b>Nothing is playing right now!</b>",
+        "no_args": "<emoji document_id=5974411134936025665>❌</emoji> <b>Specify the args!</b>",
         "autobioe": "<emoji document_id=5197688912457245639>✅</emoji> <b>Last.fm bio enabled</b>",
         "autobiod": "<emoji document_id=5197688912457245639>✅</emoji> <b>Last.fm bio disabled</b>",
-        "top": "<emoji document_id=5456498809875995940>🏆</emoji> <b>Your top-{count} the most listened tracks</b>:\n{top}"
+        "top": "<emoji document_id=5456498809875995940>🏆</emoji> <b>Your top-{count} the most listened tracks</b>:\n{top}",
+        "nores": "<emoji document_id=5974411134936025665>❌</emoji> <b>No results!</b>",
+        "now_playing": "<emoji document_id=5291772653567221434>🎧</emoji> {author} - {track}",
+        "search": "<emoji document_id=5291772653567221434>🎧</emoji> {}"
     }
 
     strings_ru = {
@@ -56,9 +60,13 @@ class LastFMMod(loader.Module):
         "error": "<emoji document_id=5312526098750252863>❌</emoji> <b>Произошла ошибка. Убедитесь, что Вы автворизованы и музыка играет!</b>\n\n<code>{error}</code>",
         "no_auth": "<emoji document_id=5312526098750252863>❌</emoji> <b>Вы не авторизованы!</b>",
         "nothing_playing": "<emoji document_id=5974411134936025665>❌</emoji> <b>Ничего сейчас не играет!</b>",
+        "no_args": "<emoji document_id=5974411134936025665>❌</emoji> <b>Укажите аргументы!</b>",
         "autobioe": "<emoji document_id=5197688912457245639>✅</emoji> <b>Авто-био для Last.fm включено</b>",
         "autobiod": "<emoji document_id=5197688912457245639>✅</emoji> <b>Авто-био для Last.fm выключено</b>",
-        "top": "<emoji document_id=5456498809875995940>🏆</emoji> <b>Ваш топ-{count} самых прослушиваемых треков</b>:\n{top}"
+        "top": "<emoji document_id=5456498809875995940>🏆</emoji> <b>Ваш топ-{count} самых прослушиваемых треков</b>:\n{top}",
+        "nores": "<emoji document_id=5974411134936025665>❌</emoji> <b>Результатов не найдено!</b>",
+        "now_playing": "<emoji document_id=5291772653567221434>🎧</emoji> {author} - {track}",
+        "search": "<emoji document_id=5291772653567221434>🎧</emoji> {}"
     }
 
 
@@ -165,10 +173,28 @@ class LastFMMod(loader.Module):
 
     @error_handler
     @loader.command(
-        ru_doc="👉 Получить топ самых прослушиваемых треков. Вы можете указать кол-во треков в топе (необязательно)"
+        ru_doc="<название> 👉 Поиск по трекам. Работает без авторизации",
+        alias="lsch"
     )
-    async def ltop(self, message: Message):
-        "👉 Get the top most listened tracks. You can enter the count of tracks (optional)"
+    async def lsearchcmd(self, message: Message):
+        "<name of track> 👉 Search for tracks. Works without authorization"
+        name = utils.get_args_raw(message)
+        if not name:
+            await utils.answer(
+                message,
+                self.strings['no_args']
+            )
+            return
+
+        await self._open_track(track=name, message=message)
+
+
+    @error_handler
+    @loader.command(
+        ru_doc="[кол-во треков в топе] 👉 Получить топ самых прослушиваемых треков. Вы можете указать кол-во треков в топе (необязательно)"
+    )
+    async def ltopcmd(self, message: Message):
+        "[count of tracks in top] 👉 Get the top most listened tracks. You can enter the count of tracks (optional)"
         args = utils.get_args(message)
         c, out = 5, ""
         if len(args) > 0 and args[0].isdigit():
@@ -219,29 +245,52 @@ class LastFMMod(loader.Module):
         artists = str(now.artist).split(', ')
         track = {'name': str(now.title), 'artists': []}
         track['artists'].append({'name': i for i in artists})
-        await self._open_track(track=track, message=message, override_text="Now playing…")
+        await self._open_track(
+            track=track, message=message,
+            override_text=self.strings['now_playing'].format(
+                author=str(now.artist), track=str(now.title)
+            )
+        )
 
 
     async def _open_track(
         self,
-        track: dict,
+        track,
         message: Message,
         override_text: str = None,
     ):
-        name = track.get("name")
-        artists = [
-            artist["name"] for artist in track.get("artists", []) if "name" in artist
-        ]
-
-        full_song_name = f"{name} - {', '.join(artists)}"
+        if type(track) is dict:
+            name = track.get("name")
+            artists = [
+                artist["name"] for artist in track.get("artists", []) if "name" in artist
+            ]
+            full_song_name = f"{name} - {', '.join(artists)}"
+        else:
+            name = ""
+            artists = []
+            full_song_name = str(track)
 
         music = await self.musicdl.dl(full_song_name, only_document=True)
 
-        await self._client.send_file(
-            message.peer_id,
-            music,
-            caption=override_text
-        )
+        if not override_text:
+            override_text = (
+                f"<emoji document_id=5291772653567221434>🎧</emoji> <b>{', '.join(artists)}</b> - <i>{name}</i>"
+                if artists else
+                f"<emoji document_id=5291772653567221434>🎧</emoji> <b>{full_song_name}</b>"
+            )
+
+        try:
+            await self._client.send_file(
+                message.peer_id,
+                music,
+                caption=override_text
+            )
+        except:
+            await utils.answer(
+                message,
+                "Some error!"
+            )
+            return
 
         if message.out:
             await message.delete()
