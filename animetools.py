@@ -1,6 +1,10 @@
+# meta pic: https://static.whypodg.me/mods/animetools.png
+# meta banner: https://mods.whypodg.me/badges/animetools.jpg
 # meta developer: @idiotcoders
 # scope: hikka_only
 # scope: hikka_min 1.2.10
+# requires: deep_translator
+
 
 from deep_translator import GoogleTranslator
 from typing import Optional
@@ -28,7 +32,7 @@ class animetoolsMod(loader.Module):
         "genres": "\n<emoji document_id=5359441070201513074>🎭 </emoji> <b>Genres:</b>  <i>{}</i>",
         "loading": "<emoji document_id=5213452215527677338>⏳</emoji> Loading...",
         "error": "<emoji document_id=5215273032553078755>❎</emoji> An error has occurred, please try again",
-        "no_desc": "❌ No description!"
+        "no_desc": "<emoji document_id=5210952531676504517>❌</emoji> No description!"
     }
 
     strings_ru = {
@@ -47,7 +51,7 @@ class animetoolsMod(loader.Module):
         "_cmd_doc_animeavailable": "Отправляет список всех доступных аниме на данный момент",
         "_cmd_doc_randomanime": "Отправляет случайное аниме",
         "_cmd_doc_characteravailable": "Отправляет список всех доступных персонажей на данный момент",
-        "no_desc": "❌ Без описания!"    
+        "no_desc": "<emoji document_id=5210952531676504517>❌</emoji> Без описания!"    
     }
 
 
@@ -80,7 +84,7 @@ class animetoolsMod(loader.Module):
 
 
     @loader.command(alias="ac")
-    async def animechar(self, message: Message):
+    async def animecharcmd(self, message: Message):
         """Sends anime quotes for specific character"""
         character_name = utils.get_args_raw(message)
         if not character_name:
@@ -109,7 +113,7 @@ class animetoolsMod(loader.Module):
 
 
     @loader.command(alias="aa")
-    async def animeavailable(self, message: Message):
+    async def animeavailablecmd(self, message: Message):
         """Sends a list of available anime"""
         args = utils.get_args_raw(message)
         link = "https://animechan.vercel.app/api/available/anime"
@@ -128,7 +132,7 @@ class animetoolsMod(loader.Module):
 
 
     @loader.command(alias="ca")
-    async def characteravailable(self, message: Message):
+    async def characteravailablecmd(self, message: Message):
         """Sends a list of available characters"""
         args = utils.get_args_raw(message)
         link = "https://animechan.vercel.app/api/available/character"
@@ -146,7 +150,7 @@ class animetoolsMod(loader.Module):
         await utils.answer(message, anime_message)
 
     @loader.command(alias="ra")
-    async def randomanime(self, message: Message):
+    async def randomanimecmd(self, message: Message):
         """Sends a random anime"""
         await utils.answer(message, self.strings["loading"])
         try:

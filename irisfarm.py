@@ -1,4 +1,10 @@
-#meta developer: @idiotcoders
+# meta pic: https://static.whypodg.me/mods/irisfarm.png
+# meta banner: https://mods.whypodg.me/badges/irisfarm.jpg
+# meta developer: @idiotcoders
+# scope: hikka_only
+# scope: hikka_min 1.2.10
+
+
 from .. import loader, utils
 import asyncio
 

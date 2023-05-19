@@ -1,8 +1,11 @@
 __version__ = (1, 0, 5)
 
+# meta pic: https://static.whypodg.me/mods/lastfm.png
+# meta banner: https://mods.whypodg.me/badges/lastfm.jpg
 # meta developer: @idiotcoders
 # scope: hikka_only
 # scope: hikka_min 1.2.10
+# requires: pylast
 
 import asyncio
 import contextlib

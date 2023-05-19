@@ -1,4 +1,9 @@
+# meta pic: https://static.whypodg.me/mods/toadbot.png
+# meta banner: https://mods.whypodg.me/badges/toadbot.jpg
 # meta developer: @idiotcoders
+# scope: hikka_only
+# scope: hikka_min 1.2.10
+
 
 import asyncio
 from .. import loader, utils
@@ -6,15 +11,23 @@ from telethon.tl.types import Message
 
 
 @loader.tds
-class toadbotMod(loader.Module):
-    """Модуль для ухода за вашей жабой
-    Когда вам лень или же когда 
-    у вас нет на это времени
+class ToadBotMod(loader.Module):
+    """Модуль для ухода за вашей жабой, когда вам лень или же когда у вас нет на это времени
     """
-    
+    """
+    Module for @toadbot, use it, when you have no time to take care of your frog or you are lazy
+    """
+
     strings = {
-        "name": "Toadbot",
-        "Jobs": "Выберите работу на которую будет ходить ваша жаба.",
+        "name": "ToadBot",
+        "jobs": "Choose a job where your toad will work.",
+        "eats": "Enable toad auto-feeding?"
+    }
+
+    strings = {
+        "name": "ToadBot",
+        "_cls_doc": "Модуль для @toadbot, используйте его, когда у вас нет времени, чтобы ухаживать за жабой или вам лень",
+        "jobs": "Выберите работу на которую будет ходить ваша жаба.",
         "eats": "Включить авто кормёжку жабы?"
     }
     
@@ -23,11 +36,11 @@ class toadbotMod(loader.Module):
             loader.ConfigValue(
                 "jobs",
                 "Поход в столовую",
-                lambda: self.strings("Jobs"),
+                lambda: self.strings("jobs"),
                 validator=loader.validators.Choice(["Поход в столовую", "Работа грабитель", "Работа крупье"]),
                 ))        
     @loader.command()
-    async def frog(self, message):
+    async def frogcmd(self, message):
         """Уход за жабой | чтобы остановить пиши 'Уход за жабой стоп'"""
         if message.is_private:
             await utils.answer(message, "❌| <b>Команда не может быть запущена в личных сообщениях.</b>")
@@ -61,7 +74,7 @@ class toadbotMod(loader.Module):
                 return
 
     @loader.command()
-    async def eat(self, message):
+    async def eatcmd(self, message):
         """Кормёжка жабы | чтобы остановить используйте 'корм стоп'"""
         if message.is_private:
             await utils.answer(message, "❌| <b>Команда не может быть запущена в личных сообщениях.</b>")

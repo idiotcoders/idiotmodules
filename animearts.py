@@ -1,3 +1,5 @@
+# meta pic: https://static.whypodg.me/mods/animearts.png
+# meta banner: https://mods.whypodg.me/badges/animearts.jpg
 # meta developer: @idiotcoders
 # scope: hikka_only
 # scope: hikka_min 1.2.10

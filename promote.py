@@ -1,14 +1,9 @@
-# ---------------------------------------------------------------------------------
-# Name: promote
-# Description: Promote/demote users
-# Author: hikkikomoa
-# Commands:
-# .promote | .demote | .fullrights
-# ---------------------------------------------------------------------------------
+# meta pic: https://static.whypodg.me/mods/promote.png
+# meta banner: https://mods.whypodg.me/badges/promote.jpg
+# meta developer: @idiotcoders
+# scope: hikka_only
+# scope: hikka_min 1.2.10
 
-# -*- coding: utf-8 -*-
-
-# meta developer: @hikkikomoa
 
 import io
 import time
