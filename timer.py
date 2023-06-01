@@ -66,7 +66,7 @@ class TimerMod(loader.Module):
 		ru_doc="— показать, сколько осталось до <чего-либо>"
 	)
 	async def timecmd(self, message: Message):
-		"""— meow"""
+		"""— show how much time is left before the event"""
 		d = str(self.config["date"]).split(".")
 		msg = str(self.config["msg"])
 
