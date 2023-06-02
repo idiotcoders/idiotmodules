@@ -25,14 +25,14 @@ class StableDiffusionMod(loader.Module):
 		"_cfg_samples": "Default quantity of images to generate",
 		"_cfg_steps": "Steps — The higher the number, the more the image will be detailed",
 		"_cfg_upscale": "Using upscale",
-		"error": "<emoji document_id=6325579261763651444>⚠</emoji> Some error occured!\n\n<code>{}</code>",
-		"key_required": "API Key required! Pass it in <code>.cfg StableDiffusion</code>",
+		"error": "<emoji document_id=6325579261763651444>⚠</emoji> <b>Some error occured!</b>\n\n<code>{}</code>",
+		"key_required": "<b>API Key required!</b> Pass it in <code>.cfg StableDiffusion</code>",
 		"done": "<emoji document_id=5327958075158568158>✅</emoji> <b>Image is generated!</b>\n\n",
 		"debug": "<b>Model:</b> <code>{model}</code>\n<b>Prompt:</b> <code>{prompt}</code>\n" \
 				 "<b>Bad prompt:</b> <code>{negative}</code>\n<b>Steps:</b> <i>{steps}, {upsc}" \
 				 "upscaled using external AI, {time}s</i>",
 		"not": "not ",
-		"drawing": "<emoji document_id=5431456208487716895>🎨</emoji> Image is drawing…",
+		"drawing": "<emoji document_id=5431456208487716895>🎨</emoji> <b>Image is drawing…</b>",
 		"help": "<emoji document_id=5325762745574891391>🥹</emoji> <b>Help for the</b> <code>StableDiffusion</code> module\n\n\n" \
 				"<emoji document_id=5409309265460471937>1️⃣</emoji> <b>Configuration:</b>\nAll configuration in the config" \
 				" - <code>.cfg StableDiffusion</code>\n\n\n<emoji document_id=5408970203562255606>2️⃣</emoji> <b>" \
@@ -57,14 +57,14 @@ class StableDiffusionMod(loader.Module):
 		"_cfg_samples": "Количество изображений по умолчанию для генерации",
 		"_cfg_steps": "Шаги - чем выше число, тем больше детальнее будет изображение.",
 		"_cfg_upscale": "Использование улучшения",
-		"error": "<emoji document_id=6325579261763651444>⚠</emoji> Произошла ошибка!\n\n<code>{}</code>",
-		"key_required": "<emoji document_id=6325579261763651444>⚠</emoji> Нужен API Key! Укажи его в <code>.cfg StableDiffusion</code>",
+		"error": "<emoji document_id=6325579261763651444>⚠</emoji> <b>Произошла ошибка!</b>\n\n<code>{}</code>",
+		"key_required": "<emoji document_id=6325579261763651444>⚠</emoji> <b>Нужен API Key!</b> Укажи его в <code>.cfg StableDiffusion</code>",
 		"done": "<emoji document_id=5327958075158568158>✅</emoji> <b>Изображение сгенерировано!</b>\n\n",
 		"debug": "<b>Модель:</b> <code>{model}</code>\n<b>Ввод:</b> <code>{prompt}</code>\n" \
 				 "<b>Негативный ввод:</b> <code>{negative}</code>\n<b>Шаги:</b> <i>{steps}, {upsc}" \
 				 "улучшено с использованием ИИ, {time}сек</i>",
 		"not": "не было ",
-		"drawing": "<emoji document_id=5431456208487716895>🎨</emoji> Рисую…",
+		"drawing": "<emoji document_id=5431456208487716895>🎨</emoji> <b>Рисую…</b>",
 		"help": "<emoji document_id=5325762745574891391>🥹</emoji> <b>Помощь по модулю </b><code>StableDiffusion</code>\n\n\n" \
 				"<emoji document_id=5409309265460471937>1️⃣</emoji> <b>Настройка</b>.\nВся настройка проводится в конфиге — " \
 				"<code>.cfg StableDiffusion</code>\n\n\n<emoji document_id=5408970203562255606>2️⃣</emoji> <b>Параметры и их описание" \
@@ -149,7 +149,7 @@ class StableDiffusionMod(loader.Module):
 		)
 
 
-	async def getFetch(url):
+	async def getFetch(self, url):
 		payload = json.dumps({"key": self.config['api_key']})
 		headers = {"Content-Type": "application/json"}
 		r = (await utils.run_sync(
@@ -162,7 +162,7 @@ class StableDiffusionMod(loader.Module):
 		if r.get('status') == "success":
 			return r['output']
 		else:
-			return (await getFetch(url))
+			return (await self.getFetch(url))
 
 
 	@loader.command(
@@ -264,7 +264,7 @@ class StableDiffusionMod(loader.Module):
 					upsc=self.strings['not'] if not self.config['upscale'] else "",
 					time=round(r['generationTime'], 2)
 				)
-			rr = await getFetch(r)
+			rr = await self.getFetch(r)
 			imgs = []
 			for i in rr['output']:
 				img = (await utils.run_sync(
