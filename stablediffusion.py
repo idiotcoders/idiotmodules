@@ -153,7 +153,7 @@ class StableDiffusionMod(loader.Module):
 		payload = json.dumps({"key": self.config['api_key']})
 		headers = {"Content-Type": "application/json"}
 		r = (await utils.run_sync(
-			requests.get,
+			requests.post,
 			url,
 			headers=headers,
 			data=payload
