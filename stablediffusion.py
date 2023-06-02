@@ -261,7 +261,8 @@ class StableDiffusionMod(loader.Module):
 					prompt=r['meta']['prompt'],
 					negative=r['meta']['negative_prompt'],
 					steps=r['meta']['steps'],
-					upsc=self.strings['not'] if not self.config['upscale'] else ""
+					upsc=self.strings['not'] if not self.config['upscale'] else "",
+					time=""
 				)
 			rr = await self.getFetch(r)
 			imgs = []
