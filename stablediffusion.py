@@ -30,7 +30,7 @@ class StableDiffusionMod(loader.Module):
 		"done": "<emoji document_id=5327958075158568158>✅</emoji> <b>Image is generated!</b>\n\n",
 		"debug": "<b>Model:</b> <code>{model}</code>\n<b>Prompt:</b> <code>{prompt}</code>\n" \
 				 "<b>Bad prompt:</b> <code>{negative}</code>\n<b>Steps:</b> <i>{steps}, {upsc}" \
-				 "upscaled using external AI, {time}s</i>",
+				 "upscaled using external AI{time}</i>",
 		"not": "not ",
 		"drawing": "<emoji document_id=5431456208487716895>🎨</emoji> <b>Image is drawing…</b>",
 		"help": "<emoji document_id=5325762745574891391>🥹</emoji> <b>Help for the</b> <code>StableDiffusion</code> module\n\n\n" \
@@ -62,7 +62,7 @@ class StableDiffusionMod(loader.Module):
 		"done": "<emoji document_id=5327958075158568158>✅</emoji> <b>Изображение сгенерировано!</b>\n\n",
 		"debug": "<b>Модель:</b> <code>{model}</code>\n<b>Ввод:</b> <code>{prompt}</code>\n" \
 				 "<b>Негативный ввод:</b> <code>{negative}</code>\n<b>Шаги:</b> <i>{steps}, {upsc}" \
-				 "улучшено с использованием ИИ, {time}сек</i>",
+				 "улучшено с использованием ИИ{time}</i>",
 		"not": "не было ",
 		"drawing": "<emoji document_id=5431456208487716895>🎨</emoji> <b>Рисую…</b>",
 		"help": "<emoji document_id=5325762745574891391>🥹</emoji> <b>Помощь по модулю </b><code>StableDiffusion</code>\n\n\n" \
@@ -239,7 +239,7 @@ class StableDiffusionMod(loader.Module):
 					negative=r['meta']['negative_prompt'],
 					steps=r['meta']['steps'],
 					upsc=self.strings['not'] if not self.config['upscale'] else "",
-					time=round(r['generationTime'], 2)
+					time=f", {round(r['generationTime'], 2)}s"
 				)
 			imgs = []
 			for i in r['output']:
@@ -261,8 +261,7 @@ class StableDiffusionMod(loader.Module):
 					prompt=r['meta']['prompt'],
 					negative=r['meta']['negative_prompt'],
 					steps=r['meta']['steps'],
-					upsc=self.strings['not'] if not self.config['upscale'] else "",
-					time=round(r['generationTime'], 2)
+					upsc=self.strings['not'] if not self.config['upscale'] else ""
 				)
 			rr = await self.getFetch(r)
 			imgs = []
