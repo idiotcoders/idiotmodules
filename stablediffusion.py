@@ -18,7 +18,7 @@ class StableDiffusionMod(loader.Module):
 	"""Some mod for work with StableDiffusion. API KEY required!"""
 	strings = {
 		"name": "StableDiffusion",
-		"_cfg_api_key": "Pass the StableDiffusionApi.com API Key",
+		"_cfg_api_key": "Insert the StableDiffusionApi.com API Key",
 		"_cfg_model": "Pass the AI model",
 		"_cfg_bad_prompt": "Pass the bad prompt — is that what you don't want to see in the pic",
 		"_cfg_debug": "Debug mode",
@@ -26,25 +26,25 @@ class StableDiffusionMod(loader.Module):
 		"_cfg_steps": "Steps — The higher the number, the more the image will be detailed",
 		"_cfg_upscale": "Using upscale",
 		"error": "<emoji document_id=6325579261763651444>⚠</emoji> <b>Some error occured!</b>\n\n<code>{}</code>",
-		"key_required": "<b>API Key required!</b> Pass it in <code>.cfg StableDiffusion</code>",
+		"key_required": "<b>API Key required!</b> Insert it in <code>.cfg StableDiffusion</code>",
 		"done": "<emoji document_id=5327958075158568158>✅</emoji> <b>Image is generated!</b>\n\n",
 		"debug": "<b>Model:</b> <code>{model}</code>\n<b>Prompt:</b> <code>{prompt}</code>\n" \
 				 "<b>Bad prompt:</b> <code>{negative}</code>\n<b>Steps:</b> <i>{steps}, {upsc}" \
 				 "upscaled using external AI{time}</i>",
 		"not": "not ",
-		"drawing": "<emoji document_id=5431456208487716895>🎨</emoji> <b>Image is drawing…</b>",
-		"help": "<emoji document_id=5325762745574891391>🥹</emoji> <b>Help for the</b> <code>StableDiffusion</code> module\n\n\n" \
+		"drawing": "<emoji document_id=5431456208487716895>🎨</emoji> <b>Image is drawing...</b>",
+		"help": "<emoji document_id=5325762745574891391>🥹</emoji> <b>Help for</b> <code>StableDiffusion</code> <b>module</b>\n\n\n" \
 				"<emoji document_id=5409309265460471937>1️⃣</emoji> <b>Configuration:</b>\nAll configuration in the config" \
 				" - <code>.cfg StableDiffusion</code>\n\n\n<emoji document_id=5408970203562255606>2️⃣</emoji> <b>" \
 				"Parameters and their description:</b>\n  <code>api_key</code> is your personal access key to StableDiffusionAPI.com, " \
-				"you can get it on the same site\n\n  <code>model</code> is the model to be generated (the config specifies which " \
-				"models are available)\n\n  <code>bad_prompt</code> - negative input. it is needed in order to remove from your " \
-				"images what you do not want to see\n\n  <code>debug</code> - if <i>True</i>, the response will contain" \
+				" you can get it <a href='https://stablediffusionapi.com/settings/api'>here</a>\n\n  <code>model</code> is the model to be generated (in config specifies which " \
+				"models are available)\n\n  <code>bad_prompt</code> - negative input. It is needed in order to remove from your " \
+				"images what you don't wanna see\n\n  <code>debug</code> - if value is <i>True</i>, the response will contain" \
 				" information about the generated image(s) (model, prompt, bad_prompt, steps, etc.)\n  <code>samples</code> — " \
 				"number of images generated\n\n  <code>steps</code> are <i>«steps»</i> . the higher the number, the more detailed" \
-				" the image will be\n\n  <code>upscale</code> - improving generation with the help of AI\n\n\n<emoji document_id=" \
-				"5406784224122384435>3️⃣</emoji> <b>Usage:</b>\nLet's assume that you have finished the setup. Let's move on to use.\n" \
-				"You need to use it like this: <code>.sd</code> &lt;prompt&gt;\nWhere &lt;prompt&gt; is whatever you want to see on " \
+				" the image will be\n\n  <code>upscale</code> - improved generation using AI\n\n\n<emoji document_id=" \
+				"5406784224122384435>3️⃣</emoji> <b>Usage:</b>\nLet's suppose that you have finished the setup. Let's move on to use.\n" \
+				"You need to use it like this: <code>.sd</code> &lt;prompt&gt;\nWhere &lt;prompt&gt; is whatever you wanna see on " \
 				"the image"
 		}
 
