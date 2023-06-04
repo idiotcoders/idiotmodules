@@ -63,7 +63,7 @@ class animetoolsMod(loader.Module):
     @loader.command(alias="fa")
     async def findanimecmd(self, message):
         """Search by picture for what anime"""
-        await utils.answer(message, self.strings["loading"])
+        loading = await utils.answer(message, self.strings["loading"])
         reply_msg = await message.get_reply_message()
         msg = reply_msg or message
         media = msg.media
@@ -90,6 +90,7 @@ class animetoolsMod(loader.Module):
             video = res['video']
             name = res['filename'].split('.')[0]
             simil = res['similarity']
+            loading.delete()
             await utils.answer_file(
                 message,
                 file=video,
