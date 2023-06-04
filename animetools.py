@@ -6,10 +6,11 @@ from deep_translator import GoogleTranslator
 from typing import Optional
 
 import mimetypes
+import os
 import requests
-from telethon.tl.types import Message
 from io import BytesIO
 
+from telethon.tl.types import Message
 
 from .. import loader, utils
 
@@ -28,6 +29,7 @@ class animetoolsMod(loader.Module):
         "enter_name": "<emoji document_id=5467928559664242360>❗</emoji> <b>You must specify a character name!</b>",
         "description": "\n<emoji document_id=5818865088970362886>ℹ️</emoji> <b>Description:</b> <i>{}</i>",
         "genres": "\n<emoji document_id=5359441070201513074>🎭 </emoji> <b>Genres:</b>  <i>{}</i>",
+        "reply": "<emoji document_id=5215273032553078755>❌</emoji> You must reply to a some media or add it on your message!"
         "loading": "<emoji document_id=5213452215527677338>⏳</emoji> Loading...",
         "findanime": "<emoji document_id=5215644719022874555>ℹ️</emoji> <b>Anime:</b> <code>{}</code>\n<emoji document_id=6032602169360780718>🤨</emoji> <b>Similar to:</b> <code{}%</code>\n<emoji document_id=6334664298710697689>🍿</emoji> <b>Episode:</b> <code>{}</code>",
         "error": "<emoji document_id=5215273032553078755>❎</emoji> An error has occurred, please try again",
@@ -46,7 +48,7 @@ class animetoolsMod(loader.Module):
         "enter_name": "<emoji document_id=5467928559664242360>❗</emoji> <b>Вы должны указать имя персонажа!</b>",
         "loading": "<emoji document_id=5213452215527677338>⏳</emoji> Загрузка ...",
         "error": "<emoji document_id=5215273032553078755>❎</emoji> Произошла ошибка, попробуйте снова",
-        "no_photo": "<emoji document_id=5215273032553078755>❎</emoji> Нужна картинка",
+        "reply": "<emoji document_id=5215273032553078755>❌</emoji> Нужно ответить на фото/видео или прикрепить его!",
         "findanime": "<emoji document_id=5215644719022874555>ℹ️</emoji> <b>Аниме:</b> <code>{}</code>\n<emoji document_id=6032602169360780718>🤨</emoji> <b>Похоже на:</b> <code>{}%</code>\n<emoji document_id=6334664298710697689>🍿</emoji> <b>Эпизод:</b> <code>{}</code>",
         "_cmd_doc_findanime": "Ищет по картинке что за аниме",
         "_cmd_doc_animequote": "Отправляет аниме цитатки",
@@ -56,32 +58,12 @@ class animetoolsMod(loader.Module):
         "_cmd_doc_characteravailable": "Отправляет список всех доступных персонажей на данный момент",
         "no_desc": "❌ Без описания!"    
     }
-    async def message_q(
-        self,
-        user_id: int,
-        photo: Optional[bytes] = None,
-        mark_read: bool = False,
-        delete: bool = False,
-    ):
-        """Отправляет сообщение и возращает ответ"""
-        async with self.client.conversation(user_id) as conv:
-            # Отправляем картинку вместе с сообщением
-            msg = await conv.send_file(photo)
-
-            response = await conv.get_response()
-            if mark_read:
-                await conv.mark_read()
-
-            if delete:
-                await msg.delete()
-                await response.delete()
-
-            return response
 
 
     @loader.command(alias="fa")
     async def findanimecmd(self, message):
         """Search by picture for what anime"""
+        await utils.answer(message, self.strings["loading"])
         reply_msg = await message.get_reply_message()
         msg = reply_msg or message
         media = msg.media
@@ -113,8 +95,9 @@ class animetoolsMod(loader.Module):
                 file=video,
                 caption=self.strings["findanime"].format(name, simil*100, episode)
             )
+            os.remove(filename)
         else:
-            await utils.answer(message, self.strings['error'])
+            await utils.answer(message, self.strings['reply'])
 
 
     @loader.command(alias="aq")
