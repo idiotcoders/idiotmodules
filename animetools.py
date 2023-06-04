@@ -1,20 +1,18 @@
-# meta pic: https://static.whypodg.me/mods/animetools.png
-# meta banner: https://mods.whypodg.me/badges/animetools.jpg
 # meta developer: @idiotcoders
 # scope: hikka_only
 # scope: hikka_min 1.2.10
-# requires: deep_translator
-
 
 from deep_translator import GoogleTranslator
 from typing import Optional
 
+import mimetypes
 import requests
 from telethon.tl.types import Message
 from io import BytesIO
 
 
 from .. import loader, utils
+
 
 
 @loader.tds
@@ -31,8 +29,10 @@ class animetoolsMod(loader.Module):
         "description": "\n<emoji document_id=5818865088970362886>ℹ️</emoji> <b>Description:</b> <i>{}</i>",
         "genres": "\n<emoji document_id=5359441070201513074>🎭 </emoji> <b>Genres:</b>  <i>{}</i>",
         "loading": "<emoji document_id=5213452215527677338>⏳</emoji> Loading...",
+        "findanime": "<emoji document_id=5215644719022874555>ℹ️</emoji> <b>Anime:</b> <code>{}</code>\n<emoji document_id=6032602169360780718>🤨</emoji> <b>Similar to:</b> <code{}%</code>\n<emoji document_id=6334664298710697689>🍿</emoji> <b>Episode:</b> <code>{}</code>",
         "error": "<emoji document_id=5215273032553078755>❎</emoji> An error has occurred, please try again",
-        "no_desc": "<emoji document_id=5210952531676504517>❌</emoji> No description!"
+        "no_desc": "❌ No description!",
+        "no_photo": "<emoji document_id=5215273032553078755>❎</emoji> Need a picture"
     }
 
     strings_ru = {
@@ -46,13 +46,75 @@ class animetoolsMod(loader.Module):
         "enter_name": "<emoji document_id=5467928559664242360>❗</emoji> <b>Вы должны указать имя персонажа!</b>",
         "loading": "<emoji document_id=5213452215527677338>⏳</emoji> Загрузка ...",
         "error": "<emoji document_id=5215273032553078755>❎</emoji> Произошла ошибка, попробуйте снова",
+        "no_photo": "<emoji document_id=5215273032553078755>❎</emoji> Нужна картинка",
+        "findanime": "<emoji document_id=5215644719022874555>ℹ️</emoji> <b>Аниме:</b> <code>{}</code>\n<emoji document_id=6032602169360780718>🤨</emoji> <b>Похоже на:</b> <code>{}%</code>\n<emoji document_id=6334664298710697689>🍿</emoji> <b>Эпизод:</b> <code>{}</code>",
+        "_cmd_doc_findanime": "Ищет по картинке что за аниме",
         "_cmd_doc_animequote": "Отправляет аниме цитатки",
         "_cmd_doc_animechar": "Отправляет аниме цитатки определенного персонажа",
         "_cmd_doc_animeavailable": "Отправляет список всех доступных аниме на данный момент",
         "_cmd_doc_randomanime": "Отправляет случайное аниме",
         "_cmd_doc_characteravailable": "Отправляет список всех доступных персонажей на данный момент",
-        "no_desc": "<emoji document_id=5210952531676504517>❌</emoji> Без описания!"    
+        "no_desc": "❌ Без описания!"    
     }
+    async def message_q(
+        self,
+        user_id: int,
+        photo: Optional[bytes] = None,
+        mark_read: bool = False,
+        delete: bool = False,
+    ):
+        """Отправляет сообщение и возращает ответ"""
+        async with self.client.conversation(user_id) as conv:
+            # Отправляем картинку вместе с сообщением
+            msg = await conv.send_file(photo)
+
+            response = await conv.get_response()
+            if mark_read:
+                await conv.mark_read()
+
+            if delete:
+                await msg.delete()
+                await response.delete()
+
+            return response
+
+
+    @loader.command(alias="fa")
+    async def findanimecmd(self, message):
+        """Search by picture for what anime"""
+        reply_msg = await message.get_reply_message()
+        msg = reply_msg or message
+        media = msg.media
+        if media:
+            if msg.photo:
+                filename = "photo.png"
+            elif msg.video:
+                filename = "video.mp4"
+            elif msg.gif:
+                filename = "gif.gif"
+            else:
+                filename = "photo.png"
+
+            filename = await self.client.download_media(media, file=filename)
+            typem, encoding = mimetypes.guess_type(filename)
+            r = requests.post(
+                "https://api.trace.moe/search",
+                data=open(filename, "rb"),
+                headers={"Content-Type": typem}
+            ).json()
+
+            res = r['result'][0]
+            episode = res['episode']
+            video = res['video']
+            name = res['filename'].split('.')[0]
+            simil = res['similarity']
+            await utils.answer_file(
+                message,
+                file=video,
+                caption=self.strings["findanime"].format(name, simil*100, episode)
+            )
+        else:
+            await utils.answer(message, self.strings['error'])
 
 
     @loader.command(alias="aq")
@@ -84,7 +146,7 @@ class animetoolsMod(loader.Module):
 
 
     @loader.command(alias="ac")
-    async def animecharcmd(self, message: Message):
+    async def animechar(self, message):
         """Sends anime quotes for specific character"""
         character_name = utils.get_args_raw(message)
         if not character_name:
@@ -113,7 +175,7 @@ class animetoolsMod(loader.Module):
 
 
     @loader.command(alias="aa")
-    async def animeavailablecmd(self, message: Message):
+    async def animeavailable(self, message: Message):
         """Sends a list of available anime"""
         args = utils.get_args_raw(message)
         link = "https://animechan.vercel.app/api/available/anime"
@@ -132,7 +194,7 @@ class animetoolsMod(loader.Module):
 
 
     @loader.command(alias="ca")
-    async def characteravailablecmd(self, message: Message):
+    async def characteravailable(self, message: Message):
         """Sends a list of available characters"""
         args = utils.get_args_raw(message)
         link = "https://animechan.vercel.app/api/available/character"
@@ -149,24 +211,31 @@ class animetoolsMod(loader.Module):
             anime_message = "\n".join(available_anime)
         await utils.answer(message, anime_message)
 
+
     @loader.command(alias="ra")
-    async def randomanimecmd(self, message: Message):
+    async def randomanime(self, message: Message):
         """Sends a random anime"""
-        await utils.answer(message, self.strings["loading"])
+        a = await utils.answer(message, self.strings["loading"])
         try:
             link = "https://anime777.ru/api/rand"
             adata = (await utils.run_sync(requests.get, link)).json()
+
+            anime_kind = adata["material_data"]["anime_kind"]
+            if anime_kind == "ova":
+                return await self.randomanime(message)
+
             title = adata["title"]
             genres = ", ".join(adata["material_data"]["anime_genres"])
             description = adata["material_data"]["description"]
-            if not description:
-                description = self.strings['no_desc']
             screenshots = adata["material_data"]["screenshots"]
+
             anime_message = (
                 self.strings['anime'].format(title) +
                 self.strings['genres'].format(genres) +
                 self.strings['description'].format(description)
             )
+            await a.delete() 
             await utils.answer_file(message, screenshots[0], anime_message)
+
         except:
-            await utils.answer(message, self.strings['error'])
+            await utils.answer(message, "error")
