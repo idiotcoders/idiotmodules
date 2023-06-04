@@ -31,7 +31,7 @@ class animetoolsMod(loader.Module):
         "genres": "\n<emoji document_id=5359441070201513074>🎭 </emoji> <b>Genres:</b>  <i>{}</i>",
         "reply": "<emoji document_id=5215273032553078755>❌</emoji> You must reply to a some media or add it on your message!",
         "loading": "<emoji document_id=5213452215527677338>⏳</emoji> Loading...",
-        "findanime": "<emoji document_id=5215644719022874555>ℹ️</emoji> <b>Anime:</b> <code>{}</code>\n<emoji document_id=6032602169360780718>🤨</emoji> <b>Similar to: {}</b> <code{}%</code>\n<emoji document_id=6334664298710697689>🍿</emoji> <b>Episode:</b> <code>{}</code>",
+        "findanime": "<emoji document_id=5215644719022874555>ℹ️</emoji> <b>Anime:</b> <code>{}</code>\n<emoji document_id=6032602169360780718>🤨</emoji> <b>Similar to:</b> <code>{}%</code>\n<emoji document_id=6334664298710697689>🍿</emoji> <b>Episode:</b> <code>{}</code>",
         "error": "<emoji document_id=5215273032553078755>❎</emoji> An error has occurred, please try again",
         "no_desc": "❌ No description!",
         "no_photo": "<emoji document_id=5215273032553078755>❎</emoji> Need a picture"
@@ -90,7 +90,7 @@ class animetoolsMod(loader.Module):
             video = res['video']
             name = res['filename'].split('.')[0]
             simil = res['similarity']
-            loading.delete()
+            await loading.delete()
             await utils.answer_file(
                 message,
                 file=video,
