@@ -29,7 +29,7 @@ class animetoolsMod(loader.Module):
         "enter_name": "<emoji document_id=5467928559664242360>❗</emoji> <b>You must specify a character name!</b>",
         "description": "\n<emoji document_id=5818865088970362886>ℹ️</emoji> <b>Description:</b> <i>{}</i>",
         "genres": "\n<emoji document_id=5359441070201513074>🎭 </emoji> <b>Genres:</b>  <i>{}</i>",
-        "reply": "<emoji document_id=5215273032553078755>❌</emoji> You must reply to a some media or add it on your message!"
+        "reply": "<emoji document_id=5215273032553078755>❌</emoji> You must reply to a some media or add it on your message!",
         "loading": "<emoji document_id=5213452215527677338>⏳</emoji> Loading...",
         "findanime": "<emoji document_id=5215644719022874555>ℹ️</emoji> <b>Anime:</b> <code>{}</code>\n<emoji document_id=6032602169360780718>🤨</emoji> <b>Similar to:</b> <code{}%</code>\n<emoji document_id=6334664298710697689>🍿</emoji> <b>Episode:</b> <code>{}</code>",
         "error": "<emoji document_id=5215273032553078755>❎</emoji> An error has occurred, please try again",
