@@ -81,7 +81,7 @@ class YooMoneyMod(loader.Module):
 			"<emoji document_id=5357315181649076022>📂</emoji> <b>Тип кошелька:</b> <code>{type}</code>\n"
 			"<emoji document_id=5328236964564967681>🤑</emoji> <b>Баланс:</b> <code>{balance}₽</code>"
 		),
-		"payme": "<b>💳 {}\n<a href='{}'>Оплатить {} RUB 💳</a></b>",
+		"payme": "<b>📄 {}\n<a href='{}'>Оплатить {} RUB 💳</a></b>",
 		"args": "<b>🚫 Неверные аргументы</b>"
 	}
 
