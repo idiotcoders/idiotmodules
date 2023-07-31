@@ -8,3 +8,4 @@ promote
 stablediffusion
 timer
 toadbot
+yoomoney
