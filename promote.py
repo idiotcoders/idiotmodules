@@ -1,4 +1,4 @@
-# meta pic: https://static.whypodg.me/mods/promote.png
+# meta pic: https://static.whypodg.me/mods!promote.png
 # meta banner: https://mods.whypodg.me/badges/promote.jpg
 # meta developer: @idiotcoders
 # scope: hikka_only

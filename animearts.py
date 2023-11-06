@@ -1,4 +1,4 @@
-# meta pic: https://static.whypodg.me/mods/animearts.png
+# meta pic: https://static.whypodg.me/mods!animearts.png
 # meta banner: https://mods.whypodg.me/badges/animearts.jpg
 # meta developer: @idiotcoders
 # scope: hikka_only

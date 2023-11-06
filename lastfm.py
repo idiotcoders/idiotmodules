@@ -1,6 +1,6 @@
 __version__ = (1, 0, 5)
 
-# meta pic: https://static.whypodg.me/mods/lastfm.png
+# meta pic: https://static.whypodg.me/mods!lastfm.png
 # meta banner: https://mods.whypodg.me/badges/lastfm.jpg
 # meta developer: @idiotcoders
 # scope: hikka_only

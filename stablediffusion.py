@@ -1,4 +1,4 @@
-# meta pic: https://static.whypodg.me/mods/stablediffusion.png
+# meta pic: https://static.whypodg.me/mods!stablediffusion.png
 # meta banner: https://mods.whypodg.me/badges/stablediffusion.jpg
 # meta developer: @idiotcoders
 # scope: hikka_only

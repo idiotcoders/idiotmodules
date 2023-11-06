@@ -1,4 +1,4 @@
-# meta pic: https://static.whypodg.me/mods/timer.png
+# meta pic: https://static.whypodg.me/mods!timer.png
 # meta banner: https://mods.whypodg.me/badges/timer.jpg
 # meta developer: @idiotcoders
 # scope: hikka_only

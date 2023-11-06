@@ -1,4 +1,4 @@
-# meta pic: https://static.whypodg.me/mods/irisfarm.png
+# meta pic: https://static.whypodg.me/mods!irisfarm.png
 # meta banner: https://mods.whypodg.me/badges/irisfarm.jpg
 # meta developer: @idiotcoders
 # scope: hikka_only

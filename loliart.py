@@ -1,4 +1,4 @@
-# meta pic: https://static.whypodg.me/mods/loliart.png
+# meta pic: https://static.whypodg.me/mods!loliart.png
 # meta banner: https://mods.whypodg.me/badges/loliart.jpg
 # meta developer: @idiotcoders
 # scope: hikka_only

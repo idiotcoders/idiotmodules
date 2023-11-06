@@ -13,7 +13,7 @@ __version__ = (3, 2, 0)
 # 🔒 Licensed under the GNU AGPLv3
 # 🌐 https://www.gnu.org/licenses/agpl-3.0.html
 
-# meta pic: https://static.whypodg.me/mods/bio.png
+# meta pic: https://static.whypodg.me/mods!bio.png
 # meta banner: https://mods.whypodg.me/badges/bio.jpg
 # scope: hikka_only
 # scope: hikka_min 1.2.10

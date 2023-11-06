@@ -1,4 +1,4 @@
-# meta pic: https://static.whypodg.me/mods/toadbot.png
+# meta pic: https://static.whypodg.me/mods!toadbot.png
 # meta banner: https://mods.whypodg.me/badges/toadbot.jpg
 # meta developer: @idiotcoders
 # scope: hikka_only

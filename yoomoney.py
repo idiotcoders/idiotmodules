@@ -1,4 +1,4 @@
-# meta pic: https://static.whypodg.me/mods/yoomoney.png
+# meta pic: https://static.whypodg.me/mods!yoomoney.png
 # meta banner: https://mods.whypodg.me/badges/yoomoney.jpg
 # meta developer: @idiotcoders
 # scope: hikka_only
