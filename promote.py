@@ -41,7 +41,6 @@ class PromoteMod(loader.Module):
         "right_anonymous": "{emoji} Anonymous",
         "right_manage_call": "{emoji} Manage {streams_or_calls}",
         "streams": "streams", "calls": "calls",
-        "right_manage_topics": "{emoji} Manage topics",
         "right_other": "{emoji} Other",
         "confirm": "✅ Confirm",
     }
@@ -71,7 +70,6 @@ class PromoteMod(loader.Module):
         "right_anonymous": "{emoji} Анонимность",
         "right_manage_call": "{emoji} Управление {streams_or_calls}",
         "streams": "трансляциями", "calls": "звонками",
-        "right_manage_topics": "{emoji} Управление темами",
         "right_other": "{emoji} Прочее",
         "confirm": "✅ Подтвердить",
         "_cls_doc": "Управление правами администраторов в чатах."
@@ -177,8 +175,6 @@ class PromoteMod(loader.Module):
                     user.id,
                     telethon.types.ChatAdminRights(
                         change_info=True,
-                        post_messages=True,
-                        edit_messages=True,
                         delete_messages=True,
                         ban_users=True,
                         invite_users=True,
@@ -186,8 +182,7 @@ class PromoteMod(loader.Module):
                         add_admins=True,
                         anonymous=False,
                         manage_call=True,
-                        other=True,
-                        manage_topics=True
+                        other=True
                     ),
                     rank
                 )
@@ -248,7 +243,7 @@ class PromoteMod(loader.Module):
             "anonymous": False,
             "manage_call": False,
             "other": False,
-            "manage_topics": False
+            "": False
         }
 
         reply_markup = []
@@ -337,13 +332,6 @@ class PromoteMod(loader.Module):
                 },
             ])
             reply_markup.append([
-                {
-                    "text": self.strings('right_manage_topics').format(
-                        emoji='💬',
-                    ),
-                    "callback": self._ch_rights,
-                    "args": [["manage_topics", True], rights, chat, rank, user]
-                },
                 {
                     "text": self.strings('right_other').format(
                         emoji='❓',
@@ -462,13 +450,6 @@ class PromoteMod(loader.Module):
             ])
             reply_markup.append([
                 {
-                    "text": self.strings("right_manage_topics").format(
-                        emoji='💬' if not all_rights.get('manage_topics', False) else '✅'
-                    ),
-                    "callback": self._ch_rights,
-                    "args": [["manage_topics", not all_rights.get("manage_topics", False)], all_rights, chat, rank, user]
-                },
-                {
                     "text": self.strings("right_other").format(
                         emoji='❓' if not all_rights.get('other', False) else '✅'
                     ),
@@ -510,8 +491,7 @@ class PromoteMod(loader.Module):
                         add_admins=all_rights.get('add_admins'),
                         anonymous=all_rights.get('anonymous'),
                         manage_call=all_rights.get('manage_call'),
-                        other=all_rights.get('other'),
-                        manage_topics=all_rights.get('manage_topics')
+                        other=all_rights.get('other')
                     ),
                     rank
                 )
