@@ -87,8 +87,15 @@ class PromoteMod(loader.Module):
                 message, self.strings("not_a_chat", message)
             )
 
-        user_id = await utils.get_target(message)
+        user_id = None
         chat = await message.get_chat()
+        reply = await message.get_reply_message()
+        if reply:
+            if reply.sender_id != message._client.tg_id
+                user_id = reply.sender_id
+        else:
+            user_id = await utils.get_target(message)
+
         if (not chat.admin_rights or not chat.admin_rights.add_admins) and not chat.creator:
             return await utils.answer(message, self.strings("no_rights", message))
         if not user_id:
@@ -140,23 +147,26 @@ class PromoteMod(loader.Module):
                 message, self.strings("not_a_chat", message)
             )
 
-        rank = "Admin"
-        args = utils.get_args_raw(message)
-        user_id = await utils.get_target(message)
+        rank, user_id = "Admin", None
         chat = await message.get_chat()
+        args = utils.get_args_raw(message)
+        reply = await message.get_reply_message()
+        if reply:
+            if reply.sender_id != message._client.tg_id
+                user_id = reply.sender_id
+            if args:
+                rank = args
+        else:
+            user_id = await utils.get_target(message)
+            if len(args.split()) > 1:
+                rank = " ".join(args.split()[1:])
+
         if (not chat.admin_rights or not chat.admin_rights.add_admins) and not chat.creator:
             return await utils.answer(message, self.strings("no_rights", message))
         if not user_id:
             return await utils.answer(
                 message, self.strings("no_user", message)
             )
-
-        if await message.get_reply_message():
-            if args:
-                rank = args
-        else:
-            if len(args.split()) > 1:
-                rank = " ".join(args.split()[1:])
 
         user = await message.client.get_entity(
             user_id
@@ -203,23 +213,26 @@ class PromoteMod(loader.Module):
                 message, self.strings("not_a_chat", message)
             )
 
-        rank = "Admin"
-        args = utils.get_args_raw(message)
-        user_id = await utils.get_target(message)
+        rank, user_id = "Admin", None
         chat = await message.get_chat()
+        args = utils.get_args_raw(message)
+        reply = await message.get_reply_message()
+        if reply:
+            if reply.sender_id != message._client.tg_id
+                user_id = reply.sender_id
+            if args:
+                rank = args
+        else:
+            user_id = await utils.get_target(message)
+            if len(args.split()) > 1:
+                rank = " ".join(args.split()[1:])
+
         if (not chat.admin_rights or not chat.admin_rights.add_admins) and not chat.creator:
             return await utils.answer(message, self.strings("no_rights", message))
         if not user_id:
             return await utils.answer(
                 message, self.strings("no_user", message)
             )
-
-        if await message.get_reply_message():
-            if args:
-                rank = args
-        else:
-            if len(args.split()) > 1:
-                rank = " ".join(args.split()[1:])
 
         user = await message.client.get_entity(
             user_id
@@ -523,4 +536,4 @@ class PromoteMod(loader.Module):
                 name=user.first_name,
                 rank=rank
             )
-        )
+    )
