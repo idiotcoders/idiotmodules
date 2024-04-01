@@ -91,7 +91,7 @@ class PromoteMod(loader.Module):
         chat = await message.get_chat()
         reply = await message.get_reply_message()
         if reply:
-            if reply.sender_id != message._client.tg_id
+            if reply.sender_id != message._client.tg_id:
                 user_id = reply.sender_id
         else:
             user_id = await utils.get_target(message)
@@ -152,7 +152,7 @@ class PromoteMod(loader.Module):
         args = utils.get_args_raw(message)
         reply = await message.get_reply_message()
         if reply:
-            if reply.sender_id != message._client.tg_id
+            if reply.sender_id != message._client.tg_id:
                 user_id = reply.sender_id
             if args:
                 rank = args
@@ -218,7 +218,7 @@ class PromoteMod(loader.Module):
         args = utils.get_args_raw(message)
         reply = await message.get_reply_message()
         if reply:
-            if reply.sender_id != message._client.tg_id
+            if reply.sender_id != message._client.tg_id:
                 user_id = reply.sender_id
             if args:
                 rank = args
