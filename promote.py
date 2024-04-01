@@ -39,9 +39,7 @@ class PromoteMod(loader.Module):
         "right_pin_messages": "{emoji} Pin messages",
         "right_add_admins": "{emoji} Promote administrators",
         "right_anonymous": "{emoji} Anonymous",
-        "right_manage_call": "{emoji} Manage {streams_or_calls}",
-        "streams": "streams", "calls": "calls",
-        "right_other": "{emoji} Other",
+        "right_manage_call": "{emoji} Manage calls",
         "confirm": "✅ Confirm",
     }
 
@@ -68,9 +66,7 @@ class PromoteMod(loader.Module):
         "right_pin_messages": "{emoji} Закреплять сообщения",
         "right_add_admins": "{emoji} Назначать администраторов",
         "right_anonymous": "{emoji} Анонимность",
-        "right_manage_call": "{emoji} Управление {streams_or_calls}",
-        "streams": "трансляциями", "calls": "звонками",
-        "right_other": "{emoji} Прочее",
+        "right_manage_call": "{emoji} Управление звонками",
         "confirm": "✅ Подтвердить",
         "_cls_doc": "Управление правами администраторов в чатах."
     }
@@ -104,29 +100,26 @@ class PromoteMod(loader.Module):
             user_id
         )
         try:
-            if message.is_channel:
-                await message.client(
-                    telethon.tl.functions.channels.EditAdminRequest(
-                        message.chat_id, user.id,
-                        telethon.types.ChatAdminRights(
-                            change_info=None,
-                            post_messages=None,
-                            edit_messages=None,
-                            delete_messages=None,
-                            ban_users=None,
-                            invite_users=None,
-                            pin_messages=None,
-                            add_admins=None,
-                            manage_call=None,
-                            other=None
-                        ),
-                        ""
-                    )
+            await message.client(
+                telethon.tl.functions.channels.EditAdminRequest(
+                    message.chat_id, user.id,
+                    telethon.types.ChatAdminRights(
+                        other=False,
+                        change_info=None,
+                        post_messages=None,
+                        edit_messages=None,
+                        delete_messages=None,
+                        ban_users=None,
+                        invite_users=None,
+                        pin_messages=None,
+                        add_admins=None,
+                        anonymous=None,
+                        manage_call=None,
+                        manage_topics=None
+                    ),
+                    ""
                 )
-            else:
-                await message.client(
-                    telethon.functions.messages.EditChatAdminRequest(message.chat_id, user.id, False)
-                )
+            )
         except telethon.errors.ChatAdminRequiredError:
             return await utils.answer(message, self.strings("no_rights", message))
 
@@ -171,18 +164,19 @@ class PromoteMod(loader.Module):
         try:
             await message.client(
                 telethon.tl.functions.channels.EditAdminRequest(
-                    message.chat_id,
-                    user.id,
+                    message.chat_id, user.id,
                     telethon.types.ChatAdminRights(
+                        other=True,
                         change_info=True,
+                        post_messages=True if chat.broadcast else None,
+                        edit_messages=True if chat.broadcast else None,
                         delete_messages=True,
                         ban_users=True,
                         invite_users=True,
-                        pin_messages=True,
                         add_admins=True,
-                        anonymous=False,
-                        manage_call=True,
-                        other=True
+                        anonymous=None,
+                        pin_messages=True if not chat.broadcast else None,
+                        manage_call=True if not chat.broadcast else None
                     ),
                     rank
                 )
@@ -242,12 +236,13 @@ class PromoteMod(loader.Module):
             "add_admins": False,
             "anonymous": False,
             "manage_call": False,
-            "other": False,
             "": False
         }
 
+        markup = []
         reply_markup = []
-        reply_markup.append([
+
+        markup.append(
             {
                 "text": self.strings('right_change_info').format(
                     emoji='✏',
@@ -256,6 +251,8 @@ class PromoteMod(loader.Module):
                 "callback": self._ch_rights,
                 "args": [["change_info", True], rights, chat, rank, user]
             },
+        )
+        markup.append(
             {
                 "text": self.strings('right_delete_messages').format(
                     emoji='🗑'
@@ -263,9 +260,9 @@ class PromoteMod(loader.Module):
                 "callback": self._ch_rights,
                 "args": [["delete_messages", True], rights, chat, rank, user]
             },
-        ])
+        )
         if chat.broadcast:
-            reply_markup.append([
+            markup.append(
                 {
                     "text": self.strings('right_post_messages').format(
                         emoji='✉',
@@ -273,6 +270,8 @@ class PromoteMod(loader.Module):
                     "callback": self._ch_rights,
                     "args": [["post_messages", True], rights, chat, rank, user]
                 },
+            )
+            markup.append(
                 {
                     "text": self.strings('right_edit_messages').format(
                         emoji='✏',
@@ -280,8 +279,8 @@ class PromoteMod(loader.Module):
                     "callback": self._ch_rights,
                     "args": [["edit_messages", True], rights, chat, rank, user]
                 },
-            ])
-        reply_markup.append([
+            )
+        markup.append(
             {
                 "text": self.strings('right_ban_users').format(
                     emoji='⛔',
@@ -289,6 +288,8 @@ class PromoteMod(loader.Module):
                 "callback": self._ch_rights,
                 "args": [["ban_users", True], rights, chat, rank, user]
             },
+        )
+        markup.append(
             {
                 "text": self.strings('right_pin_messages').format(
                     emoji='📌',
@@ -296,8 +297,8 @@ class PromoteMod(loader.Module):
                 "callback": self._ch_rights,
                 "args": [["pin_messages", True], rights, chat, rank, user]
             },
-        ])
-        reply_markup.append([
+        )
+        markup.append(
             {
                 "text": self.strings('right_add_admins').format(
                     emoji='👑',
@@ -305,17 +306,18 @@ class PromoteMod(loader.Module):
                 "callback": self._ch_rights,
                 "args": [["add_admins", True], rights, chat, rank, user]
             },
-            {
-                "text": self.strings('right_manage_call').format(
-                    emoji='📺' if chat.broadcast else '📞',
-                    streams_or_calls=self.strings('streams') if chat.broadcast else self.strings('calls')
-                ),
-                "callback": self._ch_rights,
-                "args": [["manage_call", True], rights, chat, rank, user]
-            },
-        ])
+        )
         if not chat.broadcast:
-            reply_markup.append([
+            markup.append(
+                {
+                    "text": self.strings('right_manage_call').format(
+                        emoji='📞'
+                    ),
+                    "callback": self._ch_rights,
+                    "args": [["manage_call", True], rights, chat, rank, user]
+                },
+            )
+            markup.append(
                 {
                     "text": self.strings('right_invite_users').format(
                         emoji='➕',
@@ -323,6 +325,8 @@ class PromoteMod(loader.Module):
                     "callback": self._ch_rights,
                     "args": [["invite_users", True], rights, chat, rank, user]
                 },
+            )
+            markup.append(
                 {
                     "text": self.strings('right_anonymous').format(
                         emoji='🎭',
@@ -330,16 +334,17 @@ class PromoteMod(loader.Module):
                     "callback": self._ch_rights,
                     "args": [["anonymous", True], rights, chat, rank, user]
                 },
-            ])
-            reply_markup.append([
-                {
-                    "text": self.strings('right_other').format(
-                        emoji='❓',
-                    ),
-                    "callback": self._ch_rights,
-                    "args": [["other", True], rights, chat, rank, user]
-                },
-            ])
+            )
+
+        kb = []
+        for i in markup:
+            if len(kb) == 2:
+                reply_markup.append(kb)
+                kb = []
+            kb.append(i)
+        if kb != [] and kb not in reply_markup:
+            reply_markup.append(kb)
+
         reply_markup.append([
             {
                 "text": self.strings("confirm"),
@@ -363,8 +368,10 @@ class PromoteMod(loader.Module):
     async def _ch_rights(self, call: InlineCall, right: str, all_rights: dict, chat, rank: str, user):
         all_rights[right[0]] = right[1]
 
+        markup = []
         reply_markup = []
-        reply_markup.append([
+
+        markup.append(
             {
                 "text": self.strings("right_change_info").format(
                     emoji='✏' if not all_rights.get('change_info', False) else '✅',
@@ -373,6 +380,8 @@ class PromoteMod(loader.Module):
                 "callback": self._ch_rights,
                 "args": [["change_info", not all_rights.get("change_info")], all_rights, chat, rank, user]
             },
+        )
+        markup.append(
             {
                 "text": self.strings("right_delete_messages").format(
                     emoji='🗑' if not all_rights.get('delete_messages', False) else '✅'
@@ -380,9 +389,9 @@ class PromoteMod(loader.Module):
                 "callback": self._ch_rights,
                 "args": [["delete_messages", not all_rights.get("delete_messages", False)], all_rights, chat, rank, user]
             },
-        ])
+        )
         if chat.broadcast:
-            reply_markup.append([
+            markup.append(
                 {
                     "text": self.strings("right_post_messages").format(
                         emoji='✉' if not all_rights.get('post_messages', False) else '✅'
@@ -390,6 +399,8 @@ class PromoteMod(loader.Module):
                     "callback": self._ch_rights,
                     "args": [["post_messages", not all_rights.get("post_messages", False)], all_rights, chat, rank, user]
                 },
+            )
+            markup.append(
                 {
                     "text": self.strings("right_edit_messages").format(
                         emoji='✏' if not all_rights.get('edit_messages', False) else '✅'
@@ -397,8 +408,8 @@ class PromoteMod(loader.Module):
                     "callback": self._ch_rights,
                     "args": [["edit_messages", not all_rights.get("edit_messages", False)], all_rights, chat, rank, user]
                 },
-            ])
-        reply_markup.append([
+            )
+        markup.append(
             {
                 "text": self.strings("right_ban_users").format(
                     emoji='⛔' if not all_rights.get('ban_users', False) else '✅'
@@ -406,6 +417,8 @@ class PromoteMod(loader.Module):
                 "callback": self._ch_rights,
                 "args": [["ban_users", not all_rights.get("ban_users", False)], all_rights, chat, rank, user]
             },
+        )
+        markup.append(
             {
                 "text": self.strings("right_pin_messages").format(
                     emoji='📌' if not all_rights.get('pin_messages', False) else '✅'
@@ -413,8 +426,8 @@ class PromoteMod(loader.Module):
                 "callback": self._ch_rights,
                 "args": [["pin_messages", not all_rights.get("pin_messages", False)], all_rights, chat, rank, user]
             },
-        ])
-        reply_markup.append([
+        )
+        markup.append(
             {
                 "text": self.strings("right_add_admins").format(
                     emoji='👑' if not all_rights.get('add_admins', False) else '✅'
@@ -422,17 +435,18 @@ class PromoteMod(loader.Module):
                 "callback": self._ch_rights,
                 "args": [["add_admins", not all_rights.get("add_admins", False)], all_rights, chat, rank, user]
             },
-            {
-                "text": self.strings("right_manage_call").format(
-                    emoji=('📺' if chat.broadcast else '📞') if not all_rights.get('manage_call', False) else '✅',
-                    streams_or_calls=self.strings('streams') if chat.broadcast else self.strings('calls')
-                ),
-                "callback": self._ch_rights,
-                "args": [["manage_call", not all_rights.get("manage_call", False)], all_rights, chat, rank, user]
-            },
-        ])
+        )
         if not chat.broadcast:
-            reply_markup.append([
+            markup.append(
+                {
+                    "text": self.strings("right_manage_call").format(
+                        emoji='📞' if not all_rights.get('manage_call', False) else '✅'
+                    ),
+                    "callback": self._ch_rights,
+                    "args": [["manage_call", not all_rights.get("manage_call", False)], all_rights, chat, rank, user]
+                }
+            )
+            markup.append(
                 {
                     "text": self.strings("right_invite_users").format(
                         emoji='➕' if not all_rights.get('invite_users', False) else '✅'
@@ -440,6 +454,8 @@ class PromoteMod(loader.Module):
                     "callback": self._ch_rights,
                     "args": [["invite_users", not all_rights.get("invite_users", False)], all_rights, chat, rank, user]
                 },
+            )
+            markup.append(
                 {
                     "text": self.strings("right_anonymous").format(
                         emoji='🎭' if not all_rights.get('anonymous', False) else '✅'
@@ -447,16 +463,17 @@ class PromoteMod(loader.Module):
                     "callback": self._ch_rights,
                     "args": [["anonymous", not all_rights.get("anonymous", False)], all_rights, chat, rank, user]
                 },
-            ])
-            reply_markup.append([
-                {
-                    "text": self.strings("right_other").format(
-                        emoji='❓' if not all_rights.get('other', False) else '✅'
-                    ),
-                    "callback": self._ch_rights,
-                    "args": [["other", not all_rights.get("other", False)], all_rights, chat, rank, user]
-                },
-            ])
+            )
+
+        kb = []
+        for i in markup:
+            if len(kb) == 2:
+                reply_markup.append(kb)
+                kb = []
+            kb.append(i)
+        if kb != [] and kb not in reply_markup:
+            reply_markup.append(kb)
+
         reply_markup.append([
             {
                 "text": self.strings("confirm"),
@@ -478,20 +495,20 @@ class PromoteMod(loader.Module):
         try:
             await self.client(
                 telethon.tl.functions.channels.EditAdminRequest(
-                    chat.id,
-                    user.id,
+                    chat.id, user.id,
                     telethon.types.ChatAdminRights(
+                        other=True,
                         change_info=all_rights.get('change_info'),
-                        post_messages=all_rights.get('post_messages'),
-                        edit_messages=all_rights.get('edit_messages'),
+                        post_messages=all_rights.get('post_messages') if chat.broadcast else None,
+                        edit_messages=all_rights.get('edit_messages') if chat.broadcast else None,
                         delete_messages=all_rights.get('delete_messages'),
                         ban_users=all_rights.get('ban_users'),
                         invite_users=all_rights.get('invite_users'),
-                        pin_messages=all_rights.get('pin_messages'),
                         add_admins=all_rights.get('add_admins'),
                         anonymous=all_rights.get('anonymous'),
-                        manage_call=all_rights.get('manage_call'),
-                        other=all_rights.get('other')
+                        pin_messages=all_rights.get('pin_messages') if not chat.broadcast else None,
+                        manage_call=all_rights.get('manage_call') if not chat.broadcast else None,
+                        manage_topics=all_rights.get('manage_topics') if not chat.broadcast else None
                     ),
                     rank
                 )
