@@ -1,5 +1,4 @@
 # meta developer: @idiotcoders
-# scope: hikka_only
 # scope: hikka_min 1.6.3
 
 
